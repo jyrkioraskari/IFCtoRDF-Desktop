@@ -38,7 +38,7 @@
     </MenuBar>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="375.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
          <children>
-            <Rectangle id="handleOntologiesTxt" arcHeight="5.0" arcWidth="5.0" height="420.0" layoutX="-7.0" stroke="BLACK" strokeType="INSIDE" width="530.0">
+            <Rectangle id="handleOntologiesTxt" arcHeight="5.0" arcWidth="5.0" height="420.0" layoutY="11.0" stroke="BLACK" strokeType="INSIDE" width="530.0">
                <fill>
                   <LinearGradient endX="1.0" endY="1.0" startX="0.009523809523809525">
                      <stops>
