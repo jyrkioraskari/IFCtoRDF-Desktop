@@ -10,7 +10,6 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/com.github.pipauwel/IFCtoRDF -->
 		<dependency>
 			<groupId>com.github.pipauwel</groupId>
 			<artifactId>IFCtoRDF</artifactId>
@@ -28,7 +27,6 @@
 			<artifactId>ifcParserLib</artifactId>
 			<version>0.3-SNAPSHOT</version>
 		</dependency>
-
 	</dependencies>
 
 </project>

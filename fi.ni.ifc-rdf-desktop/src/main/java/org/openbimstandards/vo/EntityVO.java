@@ -16,7 +16,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
  
- package com.buildingsmart.tech.ifcowl.vo;
+ package org.openbimstandards.vo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-public class 	EntityVO implements Serializable {
+public class EntityVO implements Serializable {
     private static final long serialVersionUID = -3172893316956350157L;
     private String name;
     private List<AttributeVO> attributes = new LinkedList<>();
