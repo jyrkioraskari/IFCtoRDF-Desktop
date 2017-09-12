@@ -2,7 +2,7 @@
 
 ## Installation: 
 
-1. IFCtoRDF dependencies
+### 1. IFCtoRDF dependencies
 
 git clone https://github.com/pipauwel/IFCtoRDF.git
 
@@ -22,7 +22,7 @@ cd EXPRESStoOWL
 
 mvn clean install
 
-2. IFCtoRDF-Desktop
+### 2. IFCtoRDF-Desktop
 
 git clone https://github.com/jyrkioraskari/IFCtoRDF-Desktop.git
 
@@ -35,7 +35,5 @@ mvn clean install
 
 fi.ni.gui.fx.IFC2RDF_Desktop
 
-![User interface]
-(https://github.com/jyrkioraskari/IFCtoRDF-Desktop/tree/master/fi.ni.ifc-rdf-desktop/src/main/resources/screen.png)
-                  https://github.com/jyrkioraskari/IFCtoRDF-Desktop/blob/master/fi.ni.ifc-rdf-desktop/src/main/resources/screen.png
+![GitHub Logo](/fi.ni.ifc-rdf-desktop/src/main/resources/screen.png)
 
