@@ -3,7 +3,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fi.ni.ifc-rdf-desktop</groupId>
 	<artifactId>fi.ni.ifc-rdf-desktop</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<name>IFC-RDF Desktop</name>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -13,20 +12,21 @@
 		<dependency>
 			<groupId>com.github.pipauwel</groupId>
 			<artifactId>IFCtoRDF</artifactId>
-			<version>0.2-SNAPSHOT</version>
+			<version>0.2</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.github.pipauwel/EXPRESStoOWL -->
 		<dependency>
 			<groupId>com.github.pipauwel</groupId>
 			<artifactId>EXPRESStoOWL</artifactId>
-			<version>0.2-SNAPSHOT</version>
+			<version>0.2</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.github.pipauwel/ifcParserLib -->
 		<dependency>
 			<groupId>com.github.pipauwel</groupId>
 			<artifactId>ifcParserLib</artifactId>
-			<version>0.3-SNAPSHOT</version>
+			<version>0.2</version>
 		</dependency>
 	</dependencies>
 
+	<version>1.0</version>
 </project>

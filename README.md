@@ -2,27 +2,6 @@
 
 ## Installation: 
 
-### 1. IFCtoRDF dependencies
-
-git clone https://github.com/pipauwel/IFCtoRDF.git
-
-cd IFCtoRDF
-
-mvn clean install
-
-git clone https://github.com/pipauwel/ifcParserLib.git
-
-cd ifcParserLib
-
-mvn clean install
-
-git clone https://github.com/pipauwel/EXPRESStoOWL.git
-
-cd EXPRESStoOWL
-
-mvn clean install
-
-### 2. IFCtoRDF-Desktop
 
 git clone https://github.com/jyrkioraskari/IFCtoRDF-Desktop.git
 
@@ -34,6 +13,12 @@ mvn clean install
 ## The main class is:
 
 fi.ni.gui.fx.IFC2RDF_Desktop
+
+This can  be run from the command line using the following command:
+java -jar IFCtoRDF_Desktop.jar
+
+If a larger model is converted, use the following:
+java -Xms24G -Xmx24G -XX:MaxPermSize=1G  -jar IFCtoRDF_Desktop.jar 
 
 ![GitHub Logo](/fi.ni.ifc-rdf-desktop/src/main/resources/screen.png)
 

@@ -7,8 +7,10 @@ fi\ni\gui\fx\IFC2RDF_Desktop.class
 org\openbimstandards\vo\EntityVO.class
 org\openbimstandards\vo\AttributeVO.class
 fi\ni\gui\fx\IFC2RDFController$1.class
+fi\ni\gui\fx\About$1.class
 org\openbimstandards\vo\InverseVO.class
 fi\ni\gui\fx\IFC2RDFController$4.class
+fi\ni\gui\fx\About.class
 fi\ni\gui\fx\IFC2RDFController$2.class
 org\openbimstandards\vo\PropertyVO.class
 fi\ni\gui\fx\FxInterface.class
