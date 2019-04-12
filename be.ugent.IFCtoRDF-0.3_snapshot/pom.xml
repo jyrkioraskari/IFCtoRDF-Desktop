@@ -19,7 +19,7 @@
 	<artifactId>IFCtoRDF</artifactId>
 	<name>IFC to RDF</name>
 	<packaging>jar</packaging>
-	<version>0.3J1-SNAPSHOT</version>
+	<version>0.3J2-SNAPSHOT</version>
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
@@ -380,6 +380,11 @@
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>23.0</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -31,18 +31,47 @@
 package fi.ni.gui.fx;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.prefs.Preferences;
+
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.ifcrdf.EventBusService;
+import org.ifcrdf.messages.SystemErrorEvent;
+import org.ifcrdf.messages.SystemStatusEvent;
+
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 
 import be.ugent.IfcSpfReader;
+import guidcompressor.GuidCompressor;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -58,6 +87,10 @@ import javafx.stage.Stage;
 
 @SuppressWarnings("restriction")
 public class IFC2RDFController implements Initializable, FxInterface {
+	String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+	private Preferences prefs = Preferences.userNodeForPackage(IFC2RDFController.class);
+	private final EventBus eventBus = EventBusService.getEventBus();
+
 	@SuppressWarnings("unused")
 	private static String ontologyNamespace;
 
@@ -93,6 +126,12 @@ public class IFC2RDFController implements Initializable, FxInterface {
 	FileChooser fc;
 
 	@FXML
+	private CheckBox hasGUID_URIs;
+
+	@FXML
+	private TextField baseURI;
+
+	@FXML
 	private void closeApplicationAction() {
 		// get a handle to the stage
 		Stage stage = (Stage) myMenuBar.getScene().getWindow();
@@ -105,7 +144,6 @@ public class IFC2RDFController implements Initializable, FxInterface {
 		Stage stage = (Stage) myMenuBar.getScene().getWindow();
 		new About(stage).show();
 	}
-
 
 	final Tooltip openExpressFileButton_tooltip = new Tooltip();
 	final Tooltip saveIfcOWLButton_tooltip = new Tooltip();
@@ -122,7 +160,12 @@ public class IFC2RDFController implements Initializable, FxInterface {
 
 		if (fc == null) {
 			fc = new FileChooser();
-			fc.setInitialDirectory(new File("."));
+			String work_directory = prefs.get("ifc_work_directory", ".");
+			File fwd = new File(work_directory);
+			if (fwd != null && fwd.exists())
+				fc.setInitialDirectory(fwd.getParentFile());
+			else
+				fc.setInitialDirectory(new File("."));
 		}
 		FileChooser.ExtensionFilter ef1;
 		ef1 = new FileChooser.ExtensionFilter("IFC documents (*.ifc)", "*.ifc");
@@ -138,11 +181,20 @@ public class IFC2RDFController implements Initializable, FxInterface {
 		fc.setInitialDirectory(file.getParentFile());
 		labelIFCFile.setText(file.getName());
 		ifcFileName = file.getAbsolutePath();
+		int i = file.getName().lastIndexOf(".");
+		if (i > 0) {
+			String target_directory = prefs.get("ifc_target_directory", file.getParentFile().getAbsolutePath());
+			if (!new File(target_directory).exists())
+				target_directory = file.getParent();
+			rdfTargetName = target_directory + File.separator + file.getName().substring(0, i) + ".ttl";
+			labelTargetFile.setText(rdfTargetName);
+		}
 		if (ifcFileName != null && rdfTargetName != null) {
 			convert2RDFButton.setDefaultButton(true);
 			convert2RDFButton.setDisable(false);
 		}
 		selectIFCFileButton.setDefaultButton(false);
+		prefs.put("ifc_work_directory", ifcFileName);
 		rdf_fileIcon.setDisable(false);
 		rdf_fileIcon.setImage(fileimage);
 	}
@@ -175,19 +227,106 @@ public class IFC2RDFController implements Initializable, FxInterface {
 
 	}
 
+	private String getGUID(Resource r) {
+		StmtIterator i = r.listProperties();
+		while (i.hasNext()) {
+			Statement s = i.next();
+			if (s.getPredicate().toString().endsWith("globalId_IfcRoot")) {
+				String guid = s.getObject().asResource().getProperty(property(EXPRESS, "hasString")).getObject()
+						.asLiteral().getLexicalForm();
+				return guid;
+			}
+		}
+		;
+		return null;
+	}
+
+	public static final String EXPRESS = "https://w3id.org/express#";
+
+	Property property(String base_uri, String tag) {
+		return ResourceFactory.createProperty(base_uri, tag);
+	}
+
 	@FXML
 	private void convertIFCToRDF() {
 		IfcSpfReader r = new IfcSpfReader();
 		conversionTxt.setText("");
+
 		try {
-			r.convert(ifcFileName, rdfTargetName, r.DEFAULT_PATH);
+			URL u = new URL(baseURI.getText());
+			u.toURI();
+		} catch (Exception e) {
+			baseURI.setText("http://linkedbuildingdata.net/ifc/resources" + timeLog + "/");
+		}
+		try {
+			if (hasGUID_URIs.isSelected()) {
+				final Map<String, String> rootmap = new HashMap<>();
+				File tempFile = File.createTempFile("ifc", ".ttl");
+				try {
+					Model m = ModelFactory.createDefaultModel();
+					r.convert(ifcFileName, tempFile.getAbsolutePath(), baseURI.getText());
+					RDFDataMgr.read(m, tempFile.getAbsolutePath());
+
+					m.listStatements().forEachRemaining(x -> {
+						String guid = getGUID(x.getSubject());
+						if (guid != null) {
+							rootmap.put(x.getSubject().getURI(), GuidCompressor.uncompressGuidString(guid));
+						}
+					});
+
+					generateModel(rootmap, m, rdfTargetName);
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					tempFile.deleteOnExit();
+				}
+
+			} else
+				r.convert(ifcFileName, rdfTargetName, baseURI.getText());
 		} catch (IOException e) {
 			conversionTxt.insertText(0, e.getMessage());
 		}
 
 	}
 
+	private void generateModel(Map<String, String> rootmap, Model in_model, String rdfTargetName) {
+		Map<String, Resource> resources_map = new HashMap<>();
+
+		for (String root_uri : rootmap.keySet()) {
+			String sg = rootmap.get(root_uri);
+			if (sg != null) {
+				String sn = root_uri.substring(0, (root_uri.lastIndexOf("/") + 1)) + "GUID/" + sg;
+				Resource root = ResourceFactory.createResource(sn);
+				resources_map.put(root_uri, root);
+			}
+		}
+		Map<String, String> prefixes = in_model.getNsPrefixMap();
+
+		Model out_model = ModelFactory.createDefaultModel();
+		out_model.setNsPrefixes(prefixes);
+		in_model.listStatements().forEachRemaining(x -> {
+			Resource s = x.getSubject();
+			Property p = x.getPredicate();
+			RDFNode o = x.getObject();
+			if (resources_map.containsKey(s.getURI()))
+				s = resources_map.get(s.getURI());
+			if (o.isResource())
+				if (resources_map.containsKey(o.asResource().getURI()))
+					o = resources_map.get(o.asResource().getURI());
+			out_model.add(out_model.createStatement(s, p, o));
+		});
+
+		try (OutputStream out = new FileOutputStream(rdfTargetName)) {
+			RDFDataMgr.write(out, out_model, Lang.N3);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void initialize(URL location, ResourceBundle resources) {
+		eventBus.register(this);
 		this.application = this;
 
 		// Accepts dropping
@@ -202,8 +341,6 @@ public class IFC2RDFController implements Initializable, FxInterface {
 				}
 			}
 		};
-
-
 
 		// Accepts dropping
 		EventHandler<DragEvent> ad_conversion = new EventHandler<DragEvent>() {
@@ -257,8 +394,17 @@ public class IFC2RDFController implements Initializable, FxInterface {
 		conversionTxt.setOnDragOver(ad_conversion);
 		conversionTxt.setOnDragDropped(dh_conversion);
 
+		baseURI.setText("http://linkedbuildingdata.net/ifc/resources" +"/"+ timeLog + "/");
+
 		rdf_fileIcon.setOnDragDetected(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent me) {
+
+				try {
+					URL u = new URL(baseURI.getText());
+					u.toURI();
+				} catch (Exception e) {
+					baseURI.setText("http://linkedbuildingdata.net/ifc/resources" + timeLog + "/");
+				}
 
 				if (!rdf_fileIcon.isDisabled()) {
 					Dragboard db = handleOnTxt.startDragAndDrop(TransferMode.ANY);
@@ -270,11 +416,31 @@ public class IFC2RDFController implements Initializable, FxInterface {
 
 						IfcSpfReader r = new IfcSpfReader();
 						conversionTxt.setText("");
-						try {
-							r.convert(ifcFileName, temp.getAbsolutePath(), r.DEFAULT_PATH);
-						} catch (IOException e) {
-							conversionTxt.insertText(0, e.getMessage());
-						}
+
+						if (hasGUID_URIs.isSelected()) {
+							final Map<String, String> rootmap = new HashMap<>();
+							File tempFile = File.createTempFile("ifc", ".ttl");
+							try {
+								Model m = ModelFactory.createDefaultModel();
+								r.convert(ifcFileName, tempFile.getAbsolutePath(), baseURI.getText());
+								RDFDataMgr.read(m, tempFile.getAbsolutePath());
+
+								m.listStatements().forEachRemaining(x -> {
+									String guid = getGUID(x.getSubject());
+									if (guid != null) {
+										rootmap.put(x.getSubject().getURI(), GuidCompressor.uncompressGuidString(guid));
+									}
+								});
+
+								generateModel(rootmap, m, rdfTargetName);
+							} catch (IOException e) {
+								e.printStackTrace();
+							} finally {
+								tempFile.deleteOnExit();
+							}
+
+						} else
+							r.convert(ifcFileName, rdfTargetName, baseURI.getText());
 
 						content.putFiles(java.util.Collections.singletonList(temp));
 						db.setContent(content);
@@ -297,6 +463,19 @@ public class IFC2RDFController implements Initializable, FxInterface {
 	}
 
 	public void handle_notification(String txt) {
-		conversionTxt.insertText(0, txt + "\n");
+		Platform.runLater(() -> this.conversionTxt.appendText(txt + "\n"));
 	}
+
+	@Subscribe
+	public void handleEvent(final SystemErrorEvent event) {
+		System.out.println("error: " + event.getStatus_message());
+		Platform.runLater(() -> this.conversionTxt.appendText("error: " + event.getStatus_message() + "\n"));
+	}
+
+	@Subscribe
+	public void handleEvent(final SystemStatusEvent event) {
+		System.out.println("message: " + event.getStatus_message());
+		Platform.runLater(() -> this.conversionTxt.appendText("status: " + event.getStatus_message() + "\n"));
+	}
+
 }

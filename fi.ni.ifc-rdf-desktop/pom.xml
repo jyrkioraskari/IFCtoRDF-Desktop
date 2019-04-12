@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>com.github.pipauwel</groupId>
 			<artifactId>IFCtoRDF</artifactId>
-			<version>0.3J1-SNAPSHOT</version>
+			<version>0.3J2-SNAPSHOT</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.github.pipauwel/EXPRESStoOWL -->
 		<dependency>

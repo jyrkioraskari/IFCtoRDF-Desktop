@@ -46,6 +46,8 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.ifcrdf.EventBusService;
+import org.ifcrdf.messages.SystemErrorEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,11 +55,12 @@ import com.buildingsmart.tech.ifcowl.ExpressReader;
 import com.buildingsmart.tech.ifcowl.vo.EntityVO;
 import com.buildingsmart.tech.ifcowl.vo.IFCVO;
 import com.buildingsmart.tech.ifcowl.vo.TypeVO;
+import com.google.common.eventbus.EventBus;
 
 import fi.ni.rdf.Namespace;
 
 public class RDFWriter {
-
+  private final EventBus eventBus = EventBusService.getEventBus();
   // input variables
   private final String baseURI;
   private final String ontNS;
@@ -177,6 +180,7 @@ private IfcSpfReader myIfcReaderStream;
       }
     } catch (IOException e) {
       e.printStackTrace();
+      eventBus.post(new SystemErrorEvent(e.getMessage()));
     }
   }
 
@@ -1174,6 +1178,7 @@ private IfcSpfReader myIfcReaderStream;
     try {
       return Long.valueOf(txt);
     } catch (NumberFormatException e) {
+      eventBus.post(new SystemErrorEvent(e.getMessage()));
       return Long.MIN_VALUE;
     }
   }
@@ -1265,6 +1270,7 @@ private IfcSpfReader myIfcReaderStream;
       try {
         ttlWriter.triple(new Triple(r.asNode(), RDF.type.asNode(), rclass.asNode()));
       } catch (Exception e) {
+        eventBus.post(new SystemErrorEvent(e.getMessage()));
         LOG.error("*ERROR 2*: getResource failed for " + uri);
         return null;
       }

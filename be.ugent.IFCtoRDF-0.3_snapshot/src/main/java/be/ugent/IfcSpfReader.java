@@ -36,23 +36,29 @@ import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.web.HttpOp;
+import org.ifcrdf.EventBusService;
+import org.ifcrdf.messages.SystemErrorEvent;
+import org.ifcrdf.messages.SystemStatusEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.buildingsmart.tech.ifcowl.vo.EntityVO;
 import com.buildingsmart.tech.ifcowl.vo.TypeVO;
+import com.google.common.eventbus.EventBus;
 
 /**
  * Main method is the primary integration point for the IFCtoRDF codebase. See
  * method description for guidance on input parameters.
  */
 public class IfcSpfReader {
+	private final EventBus eventBus = EventBusService.getEventBus();
+
 
 	private static final Logger LOG = LoggerFactory.getLogger(IfcSpfReader.class);
 
 	private String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 
-	public final String DEFAULT_PATH = "http://linkedbuildingdata.net/ifc/resources" + timeLog + "/";
+	public final String DEFAULT_URI = "http://linkedbuildingdata.net/ifc/resources" + timeLog + "/";
 
 	private boolean removeDuplicates = false;
 	private static final int FLAG_DIR = 0;
@@ -113,7 +119,7 @@ public class IfcSpfReader {
 
 				LOG.info("Converting file: " + inputFile + "\r\n");
 
-				r.convert(inputFile, outputFile, r.DEFAULT_PATH);
+				r.convert(inputFile, outputFile, r.DEFAULT_URI);
 			}
 		}
 
@@ -219,6 +225,7 @@ public class IfcSpfReader {
 				ent = (Map<String, EntityVO>) ois.readObject();
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
+				eventBus.post(new SystemErrorEvent(e.getMessage()));
 			} finally {
 				ois.close();
 			}
@@ -233,6 +240,7 @@ public class IfcSpfReader {
 				typ = (Map<String, TypeVO>) ois.readObject();
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
+				eventBus.post(new SystemErrorEvent(e.getMessage()));
 			} finally {
 				ois.close();
 			}
@@ -263,16 +271,23 @@ public class IfcSpfReader {
 				s += "\r\n# imports: " + ontURI + "\r\n\r\n";
 				out.write(s.getBytes());
 				LOG.info("Started parsing stream");
-				conv.parseModel2Stream(out);
+	            eventBus.post(new SystemStatusEvent("IFCtoRDF start parsing IFC-RDF stream"));
+	            System.out.println("started parsing stream");
+	            conv.parseModel2Stream(out);
+	            eventBus.post(new SystemStatusEvent("IFCtoRDF finished "));
 				LOG.info("Finished!!");
+
 			}
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
+			eventBus.post(new SystemErrorEvent(e1.getMessage()));
 		} finally {
 			try {
 				in.close();
 			} catch (Exception e1) {
 				e1.printStackTrace();
+				eventBus.post(new SystemErrorEvent(e1.getMessage()));
+
 			}
 		}
 	}
