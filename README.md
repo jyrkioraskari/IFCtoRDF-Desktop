@@ -1,5 +1,5 @@
 # IFCtoRDF-Desktop
-Version 2.0
+Version 2.1
 
 ## Installation: 
 Java 8 is supported. It can be downloaded from https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
