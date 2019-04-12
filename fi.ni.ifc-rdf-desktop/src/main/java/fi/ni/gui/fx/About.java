@@ -28,9 +28,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+@SuppressWarnings("restriction")
 public class About extends Stage
 {
-   public About(Stage owner)
+public About(Stage owner)
    {
       initOwner(owner);
       initStyle(StageStyle.UNDECORATED);

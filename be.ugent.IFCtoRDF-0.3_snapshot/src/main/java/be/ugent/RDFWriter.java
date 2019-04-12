@@ -78,7 +78,8 @@ public class RDFWriter {
   private InputStream inputStream;
   private final OntModel ontModel;
 
-  private IfcSpfReader myIfcReaderStream;
+  @SuppressWarnings("unused")
+private IfcSpfReader myIfcReaderStream;
 
   // for removing duplicates in line entries
   private Map<String, Resource> listOfUniqueResources = new HashMap<>();

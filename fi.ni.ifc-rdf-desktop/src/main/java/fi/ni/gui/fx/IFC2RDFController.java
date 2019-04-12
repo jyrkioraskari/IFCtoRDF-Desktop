@@ -56,7 +56,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+@SuppressWarnings("restriction")
 public class IFC2RDFController implements Initializable, FxInterface {
+	@SuppressWarnings("unused")
 	private static String ontologyNamespace;
 
 	@FXML
@@ -107,6 +109,7 @@ public class IFC2RDFController implements Initializable, FxInterface {
 
 	final Tooltip openExpressFileButton_tooltip = new Tooltip();
 	final Tooltip saveIfcOWLButton_tooltip = new Tooltip();
+	@SuppressWarnings("unused")
 	private FxInterface application;
 
 	private String ifcFileName = null;
@@ -188,6 +191,7 @@ public class IFC2RDFController implements Initializable, FxInterface {
 		this.application = this;
 
 		// Accepts dropping
+		@SuppressWarnings("unused")
 		EventHandler<DragEvent> ad_ontology = new EventHandler<DragEvent>() {
 			public void handle(DragEvent event) {
 				Dragboard db = event.getDragboard();

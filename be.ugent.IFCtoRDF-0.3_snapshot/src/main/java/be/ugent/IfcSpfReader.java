@@ -202,9 +202,17 @@ public class IfcSpfReader {
 			HttpOp.setDefaultHttpClient(HttpClientBuilder.create().build());
 			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_TRANS_INF);
 			in = IfcSpfReader.class.getResourceAsStream("/" + exp + ".ttl");
+			
+			//JO
+			if(in==null)
+                 in = IfcSpfReader.class.getResourceAsStream("/resources/"+ exp + ".ttl");
 			om.read(in, null, "TTL");
 
 			InputStream fis = IfcSpfReader.class.getResourceAsStream("/ent" + exp + ".ser");
+			
+			//JO
+			if(fis==null)
+                 fis = IfcSpfReader.class.getResourceAsStream("/resources/ent" + exp + ".ser");
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			Map<String, EntityVO> ent = null;
 			try {
@@ -216,6 +224,9 @@ public class IfcSpfReader {
 			}
 
 			fis = IfcSpfReader.class.getResourceAsStream("/typ" + exp + ".ser");
+			//JO
+			if(fis==null)
+                 fis = IfcSpfReader.class.getResourceAsStream("/resources/typ" + exp + ".ser");
 			ois = new ObjectInputStream(fis);
 			Map<String, TypeVO> typ = null;
 			try {

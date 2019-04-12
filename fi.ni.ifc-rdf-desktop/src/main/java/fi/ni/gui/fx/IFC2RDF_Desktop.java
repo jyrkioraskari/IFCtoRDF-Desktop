@@ -35,12 +35,13 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 
+@SuppressWarnings("restriction")
 public class IFC2RDF_Desktop extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("IFC2RDF.fxml"));
-        Scene scene = new Scene(root);
+		Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     }
@@ -49,6 +50,8 @@ public class IFC2RDF_Desktop extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+    	
+    	org.apache.jena.query.ARQ.init();
         launch(args);
     }
     
