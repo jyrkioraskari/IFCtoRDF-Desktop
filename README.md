@@ -33,5 +33,5 @@ java -jar IFC-RDF_Desktop_2.2.jar
 If a larger model is converted, use the following:
 java -Xms24G -Xmx24G -XX:MaxPermSize=1G  -jar IFC-RDF_Desktop_2.2.jar
 
-![GitHub Logo](/fi.ni.ifc-rdf-desktop/src/main/resources/screen.png)
+![GitHub Logo](/IFCtoRDF-Desktop/src/main/resources/screen.png)
 
