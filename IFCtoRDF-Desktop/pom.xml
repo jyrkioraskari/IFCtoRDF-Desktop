@@ -5,7 +5,11 @@
 	<groupId>org.ifcrdf</groupId>
 	<artifactId>IFC-RDF_Desktop_Java_11</artifactId>
 	<name>IFC-RDF Desktop Java 11</name>
-	
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.github.pipauwel</groupId>
@@ -47,29 +51,7 @@
 
 	<build>
   <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
-                <configuration>
-                    <release>10</release>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <mainClass>Application.Main</mainClass>
-                </configuration>
-            </plugin>
+          
             <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
