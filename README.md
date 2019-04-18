@@ -36,3 +36,29 @@ fi.ni.gui.fx.IFC2RDF_Desktop
 
 ![GitHub Logo](/IFCtoRDF-Desktop/src/main/resources/screen.png)
 
+
+## License
+This project is released under the open source [GNU Affero General Public License v3](http://www.gnu.org/licenses/agpl-3.0.en.html)
+
+## Frequently asked questions
+
+1.  What should I do if I get error like "QuantumRenderer: no suitable pipeline found".
+
+(copied from: assylias @ Stackoverflow)
+- run the application with the -Dprism.verbose=true flag
+- check the detailed log that is produced
+- it may point to a missing garphics library: GTK 2.18 is required to run JavaFX on linux
+
+Linux systems - try this first: 
+ apt-get install openjfx
+
+Feodora:
+ sudo dnf install java-1.8.0-openjdk-openjfx
+
+gtk libs missing:
+ sudo apt-get install libgtk2.0-bin libXtst6 libxslt1.1
+
+Ubuntu 16.10 (x86-64)- "missing 32-bit dependencies on 64-bit distribution":
+ sudo apt-get install libgtk2.0-0:i386 libxtst6:i386
+
+
