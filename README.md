@@ -50,7 +50,8 @@ This project is released under the open source [GNU Affero General Public Licens
 - it may point to a missing garphics library: GTK 2.18 is required to run JavaFX on linux
 
 &nbsp;&nbsp;&nbsp;Linux systems - try this first: 
- apt-get install openjfx
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apt-get install openjfx
 
 &nbsp;&nbsp;&nbsp;Feodora:
 
