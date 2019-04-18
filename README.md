@@ -40,6 +40,17 @@ fi.ni.gui.fx.IFC2RDF_Desktop
 ## License
 This project is released under the open source [GNU Affero General Public License v3](http://www.gnu.org/licenses/agpl-3.0.en.html)
 
+## Cite this
+@misc{jyrki_oraskari_2019_2641229,
+  author       = {Jyrki Oraskari},
+  title        = {{jyrkioraskari/IFCtoRDF-Desktop: The IFCtoRDF 
+                   Desktop Application 2.2 - Java 11 support}},
+  month        = apr,
+  year         = 2019,
+  doi          = {10.5281/zenodo.2641229},
+  url          = {https://doi.org/10.5281/zenodo.2641229}
+}
+
 ## Frequently asked questions
 
 1.  What should I do if I get error like "QuantumRenderer: no suitable pipeline found".
