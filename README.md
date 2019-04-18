@@ -49,19 +49,19 @@ This project is released under the open source [GNU Affero General Public Licens
 - check the detailed log that is produced
 - it may point to a missing garphics library: GTK 2.18 is required to run JavaFX on linux
 
-Linux systems - try this first: 
+- Linux systems - try this first: 
  apt-get install openjfx
 
-Feodora:
+- Feodora:
 
- sudo dnf install java-1.8.0-openjdk-openjfx
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sudo dnf install java-1.8.0-openjdk-openjfx
 
-If gtk libs missing:
+- If gtk libs missing:
 
- sudo apt-get install libgtk2.0-bin libXtst6 libxslt1.1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sudo apt-get install libgtk2.0-bin libXtst6 libxslt1.1
 
-Ubuntu 16.10 (x86-64)- "missing 32-bit dependencies on 64-bit distribution":
+- Ubuntu 16.10 (x86-64)- "missing 32-bit dependencies on 64-bit distribution":
 
- sudo apt-get install libgtk2.0-0:i386 libxtst6:i386
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sudo apt-get install libgtk2.0-0:i386 libxtst6:i386
 
 
