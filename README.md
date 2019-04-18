@@ -56,7 +56,7 @@ Feodora:
 
  sudo dnf install java-1.8.0-openjdk-openjfx
 
-gtk libs missing:
+If gtk libs missing:
 
  sudo apt-get install libgtk2.0-bin libXtst6 libxslt1.1
 
