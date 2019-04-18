@@ -53,12 +53,15 @@ Linux systems - try this first:
  apt-get install openjfx
 
 Feodora:
+
  sudo dnf install java-1.8.0-openjdk-openjfx
 
 gtk libs missing:
+
  sudo apt-get install libgtk2.0-bin libXtst6 libxslt1.1
 
 Ubuntu 16.10 (x86-64)- "missing 32-bit dependencies on 64-bit distribution":
+
  sudo apt-get install libgtk2.0-0:i386 libxtst6:i386
 
 
