@@ -44,7 +44,7 @@ This project is released under the open source [GNU Affero General Public Licens
 
 1.  What should I do if I get error like "QuantumRenderer: no suitable pipeline found".
 
-(copied from: assylias @ Stackoverflow)
+&nbsp;&nbsp;&nbsp;(copied from: assylias @ Stackoverflow)
 - run the application with the -Dprism.verbose=true flag
 - check the detailed log that is produced
 - it may point to a missing garphics library: GTK 2.18 is required to run JavaFX on linux
