@@ -18,10 +18,6 @@ https://www.java.com/en/download/
 ## Compilation: 
 git clone https://github.com/jyrkioraskari/IFCtoRDF-Desktop.git
 
-cd be.ugent.EXPRESStoOWL-0.3_snapshot
-mvn clean install
-cd ..
-
 cd be.ugent.IFCtoRDF-0.3_snapshot
 mvn clean install
 cd ..
