@@ -1,7 +1,7 @@
 /*
  * The GNU Affero General Public License
  * 
- * Copyright (c) 2015 Jyrki Oraskari (Jyrki.Oraskari@aalto.fi / jyrki.oraskari@aalto.fi)
+ * Copyright (c) 2015, 2019 Jyrki Oraskari (Jyrki.Oraskari@aalto.fi / jyrki.oraskari@aalto.fi)
  * Copyright (c) 2015 Pieter Pauwels (pipauwel.pauwels@ugent.be / pipauwel@gmail.com)
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -19,10 +19,6 @@
  */
 
 /*
- * To compile this, Java 8 is needed. jfxrt.jar is included, so, the the plugin should not be mandatory
- * but installing the http://www.eclipse.org/efxclipse/index.html and http://gluonhq.com/open-source/scene-builder/
- * make coding easier. 
- * 
    Royalty Free Stock Image: Blue Glass web icons, buttons
    The File image is implemented using:
    http://www.dreamstime.com/royalty-free-stock-image-blue-glass-web-icons-buttons-image8270526

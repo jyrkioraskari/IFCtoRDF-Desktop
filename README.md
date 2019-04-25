@@ -37,6 +37,17 @@ fi.ni.gui.fx.IFC2RDF_Desktop
 ![GitHub Logo](/IFCtoRDF-Desktop/src/main/resources/screen.png)
 
 
+## The Bash compatible command line converter:
+
+```
+Usage: java -jar IFCtoRDFCommandLine.jar [OPTIONS] <inFile>... [<rdfTargetName>...]
+      <inFile>...
+      [<rdfTargetName>...]
+  -d, --dir                  converts all entries at the directory input directory
+  -g, --guid_uris            create GUID URIs
+  -k, --keep-duplicates      keeps duplicate entries
+  -u, --baseURI=<base_URI>   the base uri of the entities
+```
 ## License
 This project is released under the open source [GNU Affero General Public License v3](http://www.gnu.org/licenses/agpl-3.0.en.html)
 

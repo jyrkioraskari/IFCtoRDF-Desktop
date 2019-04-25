@@ -286,4 +286,13 @@ public class IfcSpfReader {
             }
         }
     }
+
+    public boolean isRemoveDuplicates() {
+        return removeDuplicates;
+    }
+
+    public void setRemoveDuplicates(boolean removeDuplicates) {
+        this.removeDuplicates = removeDuplicates;
+    }
+    
 }
