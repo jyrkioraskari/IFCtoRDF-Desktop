@@ -19,11 +19,15 @@ https://www.java.com/en/download/
 git clone https://github.com/jyrkioraskari/IFCtoRDF-Desktop.git
 
 cd be.ugent.IFCtoRDF-0.3_snapshot
+
 mvn clean install
+
 cd ..
 
 cd IFCtoRDF-Desktop
+
 mvn clean install
+
 cd ..
 
 ## The main class is:
