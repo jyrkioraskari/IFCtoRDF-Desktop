@@ -21,11 +21,10 @@ import com.google.common.eventbus.EventBus;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 public class EventBusService {
-	private static final EventBus eventBus = new EventBus();
+    private static final EventBus eventBus = new EventBus();
 
-	public static EventBus getEventBus() {
-		return eventBus;
-	}
+    public static EventBus getEventBus() {
+        return eventBus;
+    }
 }

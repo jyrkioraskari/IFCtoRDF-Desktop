@@ -87,395 +87,394 @@ import javafx.stage.Stage;
 
 @SuppressWarnings("restriction")
 public class IFC2RDFController implements Initializable, FxInterface {
-	String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-	private Preferences prefs = Preferences.userNodeForPackage(IFC2RDFController.class);
-	private final EventBus eventBus = EventBusService.getEventBus();
+    String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+    private Preferences prefs = Preferences.userNodeForPackage(IFC2RDFController.class);
+    private final EventBus eventBus = EventBusService.getEventBus();
 
-	@SuppressWarnings("unused")
-	private static String ontologyNamespace;
+    @SuppressWarnings("unused")
+    private static String ontologyNamespace;
 
-	@FXML
-	MenuBar myMenuBar;
+    @FXML
+    MenuBar myMenuBar;
 
-	@FXML
-	private TextArea handleOnTxt;
+    @FXML
+    private TextArea handleOnTxt;
 
-	@FXML
-	Rectangle conversionArea;
-	@FXML
-	private Button selectIFCFileButton;
-	@FXML
-	private Button selectTargetButton;
+    @FXML
+    Rectangle conversionArea;
+    @FXML
+    private Button selectIFCFileButton;
+    @FXML
+    private Button selectTargetButton;
 
-	@FXML
-	private Button convert2RDFButton;
-	@FXML
-	private Label labelIFCFile;
-	@FXML
-	private Label labelTargetFile;
-	@FXML
-	private TextArea conversionTxt;
+    @FXML
+    private Button convert2RDFButton;
+    @FXML
+    private Label labelIFCFile;
+    @FXML
+    private Label labelTargetFile;
+    @FXML
+    private TextArea conversionTxt;
 
-	@FXML
-	private ImageView owl_fileIcon;
-	@FXML
-	private ImageView rdf_fileIcon;
+    @FXML
+    private ImageView owl_fileIcon;
+    @FXML
+    private ImageView rdf_fileIcon;
 
-	Image fileimage = new Image(getClass().getResourceAsStream("file.png"));
+    Image fileimage = new Image(getClass().getResourceAsStream("file.png"));
 
-	FileChooser fc;
+    FileChooser fc;
 
-	@FXML
-	private CheckBox hasGUID_URIs;
+    @FXML
+    private CheckBox hasGUID_URIs;
 
-	@FXML
-	private TextField baseURI;
+    @FXML
+    private TextField baseURI;
 
-	@FXML
-	private void closeApplicationAction() {
-		// get a handle to the stage
-		Stage stage = (Stage) myMenuBar.getScene().getWindow();
-		stage.close();
-	}
+    @FXML
+    private void closeApplicationAction() {
+        // get a handle to the stage
+        Stage stage = (Stage) myMenuBar.getScene().getWindow();
+        stage.close();
+    }
 
-	@FXML
-	private void aboutAction() {
-		// get a handle to the stage
-		Stage stage = (Stage) myMenuBar.getScene().getWindow();
-		new About(stage).show();
-	}
+    @FXML
+    private void aboutAction() {
+        // get a handle to the stage
+        Stage stage = (Stage) myMenuBar.getScene().getWindow();
+        new About(stage).show();
+    }
 
-	final Tooltip openExpressFileButton_tooltip = new Tooltip();
-	final Tooltip saveIfcOWLButton_tooltip = new Tooltip();
-	@SuppressWarnings("unused")
-	private FxInterface application;
+    final Tooltip openExpressFileButton_tooltip = new Tooltip();
+    final Tooltip saveIfcOWLButton_tooltip = new Tooltip();
+    @SuppressWarnings("unused")
+    private FxInterface application;
 
-	private String ifcFileName = null;
-	private String rdfTargetName = null;
+    private String ifcFileName = null;
+    private String rdfTargetName = null;
 
-	@FXML
-	private void selectIFCFile() {
-		Stage stage = (Stage) myMenuBar.getScene().getWindow();
-		File file = null;
+    @FXML
+    private void selectIFCFile() {
+        Stage stage = (Stage) myMenuBar.getScene().getWindow();
+        File file = null;
 
-		if (fc == null) {
-			fc = new FileChooser();
-			String work_directory = prefs.get("ifc_work_directory", ".");
-			File fwd = new File(work_directory);
-			if (fwd != null && fwd.exists())
-				fc.setInitialDirectory(fwd.getParentFile());
-			else
-				fc.setInitialDirectory(new File("."));
-		}
-		FileChooser.ExtensionFilter ef1;
-		ef1 = new FileChooser.ExtensionFilter("IFC documents (*.ifc)", "*.ifc");
-		FileChooser.ExtensionFilter ef2;
-		ef2 = new FileChooser.ExtensionFilter("All Files", "*.*");
-		fc.getExtensionFilters().clear();
-		fc.getExtensionFilters().addAll(ef1, ef2);
+        if (fc == null) {
+            fc = new FileChooser();
+            String work_directory = prefs.get("ifc_work_directory", ".");
+            File fwd = new File(work_directory);
+            if (fwd != null && fwd.exists())
+                fc.setInitialDirectory(fwd.getParentFile());
+            else
+                fc.setInitialDirectory(new File("."));
+        }
+        FileChooser.ExtensionFilter ef1;
+        ef1 = new FileChooser.ExtensionFilter("IFC documents (*.ifc)", "*.ifc");
+        FileChooser.ExtensionFilter ef2;
+        ef2 = new FileChooser.ExtensionFilter("All Files", "*.*");
+        fc.getExtensionFilters().clear();
+        fc.getExtensionFilters().addAll(ef1, ef2);
 
-		if (file == null)
-			file = fc.showOpenDialog(stage);
-		if (file == null)
-			return;
-		fc.setInitialDirectory(file.getParentFile());
-		labelIFCFile.setText(file.getName());
-		ifcFileName = file.getAbsolutePath();
-		int i = file.getName().lastIndexOf(".");
-		if (i > 0) {
-			String target_directory = prefs.get("ifc_target_directory", file.getParentFile().getAbsolutePath());
-			if (!new File(target_directory).exists())
-				target_directory = file.getParent();
-			rdfTargetName = target_directory + File.separator + file.getName().substring(0, i) + ".ttl";
-			labelTargetFile.setText(rdfTargetName);
-		}
-		if (ifcFileName != null && rdfTargetName != null) {
-			convert2RDFButton.setDefaultButton(true);
-			convert2RDFButton.setDisable(false);
-		}
-		selectIFCFileButton.setDefaultButton(false);
-		prefs.put("ifc_work_directory", ifcFileName);
-		rdf_fileIcon.setDisable(false);
-		rdf_fileIcon.setImage(fileimage);
-	}
+        if (file == null)
+            file = fc.showOpenDialog(stage);
+        if (file == null)
+            return;
+        fc.setInitialDirectory(file.getParentFile());
+        labelIFCFile.setText(file.getName());
+        ifcFileName = file.getAbsolutePath();
+        int i = file.getName().lastIndexOf(".");
+        if (i > 0) {
+            String target_directory = prefs.get("ifc_target_directory", file.getParentFile().getAbsolutePath());
+            if (!new File(target_directory).exists())
+                target_directory = file.getParent();
+            rdfTargetName = target_directory + File.separator + file.getName().substring(0, i) + ".ttl";
+            labelTargetFile.setText(rdfTargetName);
+        }
+        if (ifcFileName != null && rdfTargetName != null) {
+            convert2RDFButton.setDefaultButton(true);
+            convert2RDFButton.setDisable(false);
+        }
+        selectIFCFileButton.setDefaultButton(false);
+        prefs.put("ifc_work_directory", ifcFileName);
+        rdf_fileIcon.setDisable(false);
+        rdf_fileIcon.setImage(fileimage);
+    }
 
-	@FXML
-	private void selectTargetFile() {
-		Stage stage = (Stage) myMenuBar.getScene().getWindow();
-		File file = null;
-		if (fc == null) {
-			fc = new FileChooser();
-			fc.setInitialDirectory(new File("."));
-		}
-		FileChooser.ExtensionFilter ef1;
-		ef1 = new FileChooser.ExtensionFilter("Turtle and RDF/XML (*.ttl)", "*.ttl", "*.rdf");
-		fc.getExtensionFilters().clear();
-		fc.getExtensionFilters().addAll(ef1);
+    @FXML
+    private void selectTargetFile() {
+        Stage stage = (Stage) myMenuBar.getScene().getWindow();
+        File file = null;
+        if (fc == null) {
+            fc = new FileChooser();
+            fc.setInitialDirectory(new File("."));
+        }
+        FileChooser.ExtensionFilter ef1;
+        ef1 = new FileChooser.ExtensionFilter("Turtle and RDF/XML (*.ttl)", "*.ttl", "*.rdf");
+        fc.getExtensionFilters().clear();
+        fc.getExtensionFilters().addAll(ef1);
 
-		if (file == null)
-			file = fc.showSaveDialog(stage);
-		if (file == null)
-			return;
-		fc.setInitialDirectory(file.getParentFile());
-		labelTargetFile.setText(file.getName());
-		rdfTargetName = file.getAbsolutePath();
-		if (ifcFileName != null && rdfTargetName != null) {
-			convert2RDFButton.setDefaultButton(true);
-			convert2RDFButton.setDisable(false);
-		}
-		selectTargetButton.setDefaultButton(false);
+        if (file == null)
+            file = fc.showSaveDialog(stage);
+        if (file == null)
+            return;
+        fc.setInitialDirectory(file.getParentFile());
+        labelTargetFile.setText(file.getName());
+        rdfTargetName = file.getAbsolutePath();
+        if (ifcFileName != null && rdfTargetName != null) {
+            convert2RDFButton.setDefaultButton(true);
+            convert2RDFButton.setDisable(false);
+        }
+        selectTargetButton.setDefaultButton(false);
 
-	}
+    }
 
-	private String getGUID(Resource r) {
-		StmtIterator i = r.listProperties();
-		while (i.hasNext()) {
-			Statement s = i.next();
-			if (s.getPredicate().toString().endsWith("globalId_IfcRoot")) {
-				String guid = s.getObject().asResource().getProperty(property(EXPRESS, "hasString")).getObject()
-						.asLiteral().getLexicalForm();
-				return guid;
-			}
-		}
-		;
-		return null;
-	}
+    private String getGUID(Resource r) {
+        StmtIterator i = r.listProperties();
+        while (i.hasNext()) {
+            Statement s = i.next();
+            if (s.getPredicate().toString().endsWith("globalId_IfcRoot")) {
+                String guid = s.getObject().asResource().getProperty(property(EXPRESS, "hasString")).getObject().asLiteral().getLexicalForm();
+                return guid;
+            }
+        }
+        ;
+        return null;
+    }
 
-	public static final String EXPRESS = "https://w3id.org/express#";
+    public static final String EXPRESS = "https://w3id.org/express#";
 
-	Property property(String base_uri, String tag) {
-		return ResourceFactory.createProperty(base_uri, tag);
-	}
+    Property property(String base_uri, String tag) {
+        return ResourceFactory.createProperty(base_uri, tag);
+    }
 
-	@FXML
-	private void convertIFCToRDF() {
-		IfcSpfReader r = new IfcSpfReader();
-		conversionTxt.setText("");
+    @FXML
+    private void convertIFCToRDF() {
+        IfcSpfReader r = new IfcSpfReader();
+        conversionTxt.setText("");
 
-		try {
-			URL u = new URL(baseURI.getText());
-			u.toURI();
-		} catch (Exception e) {
-			baseURI.setText("http://linkedbuildingdata.net/ifc/resources" + timeLog + "/");
-		}
-		try {
-			if (hasGUID_URIs.isSelected()) {
-				final Map<String, String> rootmap = new HashMap<>();
-				File tempFile = File.createTempFile("ifc", ".ttl");
-				try {
-					Model m = ModelFactory.createDefaultModel();
-					r.convert(ifcFileName, tempFile.getAbsolutePath(), baseURI.getText());
-					RDFDataMgr.read(m, tempFile.getAbsolutePath());
+        try {
+            URL u = new URL(baseURI.getText());
+            u.toURI();
+        } catch (Exception e) {
+            baseURI.setText("http://linkedbuildingdata.net/ifc/resources" + timeLog + "/");
+        }
+        try {
+            if (hasGUID_URIs.isSelected()) {
+                final Map<String, String> rootmap = new HashMap<>();
+                File tempFile = File.createTempFile("ifc", ".ttl");
+                try {
+                    Model m = ModelFactory.createDefaultModel();
+                    r.convert(ifcFileName, tempFile.getAbsolutePath(), baseURI.getText());
+                    RDFDataMgr.read(m, tempFile.getAbsolutePath());
 
-					m.listStatements().forEachRemaining(x -> {
-						String guid = getGUID(x.getSubject());
-						if (guid != null) {
-							rootmap.put(x.getSubject().getURI(), GuidCompressor.uncompressGuidString(guid));
-						}
-					});
+                    m.listStatements().forEachRemaining(x -> {
+                        String guid = getGUID(x.getSubject());
+                        if (guid != null) {
+                            rootmap.put(x.getSubject().getURI(), GuidCompressor.uncompressGuidString(guid));
+                        }
+                    });
 
-					generateModel(rootmap, m, rdfTargetName);
-				} catch (IOException e) {
-					e.printStackTrace();
-				} finally {
-					tempFile.deleteOnExit();
-				}
+                    generateModel(rootmap, m, rdfTargetName);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    tempFile.deleteOnExit();
+                }
 
-			} else
-				r.convert(ifcFileName, rdfTargetName, baseURI.getText());
-		} catch (IOException e) {
-			conversionTxt.insertText(0, e.getMessage());
-		}
+            } else
+                r.convert(ifcFileName, rdfTargetName, baseURI.getText());
+        } catch (IOException e) {
+            conversionTxt.insertText(0, e.getMessage());
+        }
 
-	}
+    }
 
-	private void generateModel(Map<String, String> rootmap, Model in_model, String rdfTargetName) {
-		Map<String, Resource> resources_map = new HashMap<>();
+    private void generateModel(Map<String, String> rootmap, Model in_model, String rdfTargetName) {
+        Map<String, Resource> resources_map = new HashMap<>();
 
-		for (String root_uri : rootmap.keySet()) {
-			String sg = rootmap.get(root_uri);
-			if (sg != null) {
-				String sn = root_uri.substring(0, (root_uri.lastIndexOf("/") + 1)) + "GUID/" + sg;
-				Resource root = ResourceFactory.createResource(sn);
-				resources_map.put(root_uri, root);
-			}
-		}
-		Map<String, String> prefixes = in_model.getNsPrefixMap();
+        for (String root_uri : rootmap.keySet()) {
+            String sg = rootmap.get(root_uri);
+            if (sg != null) {
+                String sn = root_uri.substring(0, (root_uri.lastIndexOf("/") + 1)) + "GUID/" + sg;
+                Resource root = ResourceFactory.createResource(sn);
+                resources_map.put(root_uri, root);
+            }
+        }
+        Map<String, String> prefixes = in_model.getNsPrefixMap();
 
-		Model out_model = ModelFactory.createDefaultModel();
-		out_model.setNsPrefixes(prefixes);
-		in_model.listStatements().forEachRemaining(x -> {
-			Resource s = x.getSubject();
-			Property p = x.getPredicate();
-			RDFNode o = x.getObject();
-			if (resources_map.containsKey(s.getURI()))
-				s = resources_map.get(s.getURI());
-			if (o.isResource())
-				if (resources_map.containsKey(o.asResource().getURI()))
-					o = resources_map.get(o.asResource().getURI());
-			out_model.add(out_model.createStatement(s, p, o));
-		});
+        Model out_model = ModelFactory.createDefaultModel();
+        out_model.setNsPrefixes(prefixes);
+        in_model.listStatements().forEachRemaining(x -> {
+            Resource s = x.getSubject();
+            Property p = x.getPredicate();
+            RDFNode o = x.getObject();
+            if (resources_map.containsKey(s.getURI()))
+                s = resources_map.get(s.getURI());
+            if (o.isResource())
+                if (resources_map.containsKey(o.asResource().getURI()))
+                    o = resources_map.get(o.asResource().getURI());
+            out_model.add(out_model.createStatement(s, p, o));
+        });
 
-		try (OutputStream out = new FileOutputStream(rdfTargetName)) {
-			RDFDataMgr.write(out, out_model, Lang.N3);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+        try (OutputStream out = new FileOutputStream(rdfTargetName)) {
+            RDFDataMgr.write(out, out_model, Lang.N3);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public void initialize(URL location, ResourceBundle resources) {
-		eventBus.register(this);
-		this.application = this;
+    public void initialize(URL location, ResourceBundle resources) {
+        eventBus.register(this);
+        this.application = this;
 
-		// Accepts dropping
-		@SuppressWarnings("unused")
-		EventHandler<DragEvent> ad_ontology = new EventHandler<DragEvent>() {
-			public void handle(DragEvent event) {
-				Dragboard db = event.getDragboard();
-				if (db.hasFiles()) {
-					event.acceptTransferModes(TransferMode.COPY);
-				} else {
-					event.consume();
-				}
-			}
-		};
+        // Accepts dropping
+        @SuppressWarnings("unused")
+        EventHandler<DragEvent> ad_ontology = new EventHandler<DragEvent>() {
+            public void handle(DragEvent event) {
+                Dragboard db = event.getDragboard();
+                if (db.hasFiles()) {
+                    event.acceptTransferModes(TransferMode.COPY);
+                } else {
+                    event.consume();
+                }
+            }
+        };
 
-		// Accepts dropping
-		EventHandler<DragEvent> ad_conversion = new EventHandler<DragEvent>() {
-			public void handle(DragEvent event) {
-				Dragboard db = event.getDragboard();
-				if (db.hasFiles()) {
-					event.acceptTransferModes(TransferMode.COPY);
-				} else {
-					event.consume();
-				}
-			}
-		};
+        // Accepts dropping
+        EventHandler<DragEvent> ad_conversion = new EventHandler<DragEvent>() {
+            public void handle(DragEvent event) {
+                Dragboard db = event.getDragboard();
+                if (db.hasFiles()) {
+                    event.acceptTransferModes(TransferMode.COPY);
+                } else {
+                    event.consume();
+                }
+            }
+        };
 
-		// Dropping over surface
-		EventHandler<DragEvent> dh_conversion = new EventHandler<DragEvent>() {
-			public void handle(DragEvent event) {
-				Dragboard db = event.getDragboard();
-				boolean success = false;
-				if (db.hasFiles()) {
-					success = true;
-					for (File file : db.getFiles()) {
-						labelIFCFile.setText(file.getName());
-						ifcFileName = file.getAbsolutePath();
-						if (ifcFileName != null && rdfTargetName != null) {
-							convert2RDFButton.setDefaultButton(true);
-							selectIFCFileButton.setDefaultButton(false);
-							selectTargetButton.setDefaultButton(false);
-							convert2RDFButton.setDisable(false);
-						}
-						rdf_fileIcon.setDisable(false);
-						rdf_fileIcon.setImage(fileimage);
-					}
-				}
-				event.setDropCompleted(success);
-				event.consume();
-			}
-		};
+        // Dropping over surface
+        EventHandler<DragEvent> dh_conversion = new EventHandler<DragEvent>() {
+            public void handle(DragEvent event) {
+                Dragboard db = event.getDragboard();
+                boolean success = false;
+                if (db.hasFiles()) {
+                    success = true;
+                    for (File file : db.getFiles()) {
+                        labelIFCFile.setText(file.getName());
+                        ifcFileName = file.getAbsolutePath();
+                        if (ifcFileName != null && rdfTargetName != null) {
+                            convert2RDFButton.setDefaultButton(true);
+                            selectIFCFileButton.setDefaultButton(false);
+                            selectTargetButton.setDefaultButton(false);
+                            convert2RDFButton.setDisable(false);
+                        }
+                        rdf_fileIcon.setDisable(false);
+                        rdf_fileIcon.setImage(fileimage);
+                    }
+                }
+                event.setDropCompleted(success);
+                event.consume();
+            }
+        };
 
-		conversionArea.setOnDragOver(ad_conversion);
-		conversionArea.setOnDragDropped(dh_conversion);
-		selectIFCFileButton.setOnDragOver(ad_conversion);
-		selectIFCFileButton.setOnDragDropped(dh_conversion);
-		selectTargetButton.setOnDragOver(ad_conversion);
-		selectTargetButton.setOnDragDropped(dh_conversion);
-		convert2RDFButton.setOnDragOver(ad_conversion);
-		convert2RDFButton.setOnDragDropped(dh_conversion);
-		labelIFCFile.setOnDragOver(ad_conversion);
-		labelIFCFile.setOnDragDropped(dh_conversion);
-		labelTargetFile.setOnDragOver(ad_conversion);
-		labelTargetFile.setOnDragDropped(dh_conversion);
-		conversionTxt.setOnDragOver(ad_conversion);
-		conversionTxt.setOnDragDropped(dh_conversion);
+        conversionArea.setOnDragOver(ad_conversion);
+        conversionArea.setOnDragDropped(dh_conversion);
+        selectIFCFileButton.setOnDragOver(ad_conversion);
+        selectIFCFileButton.setOnDragDropped(dh_conversion);
+        selectTargetButton.setOnDragOver(ad_conversion);
+        selectTargetButton.setOnDragDropped(dh_conversion);
+        convert2RDFButton.setOnDragOver(ad_conversion);
+        convert2RDFButton.setOnDragDropped(dh_conversion);
+        labelIFCFile.setOnDragOver(ad_conversion);
+        labelIFCFile.setOnDragDropped(dh_conversion);
+        labelTargetFile.setOnDragOver(ad_conversion);
+        labelTargetFile.setOnDragDropped(dh_conversion);
+        conversionTxt.setOnDragOver(ad_conversion);
+        conversionTxt.setOnDragDropped(dh_conversion);
 
-		baseURI.setText("http://linkedbuildingdata.net/ifc/resources" +"/"+ timeLog + "/");
+        baseURI.setText("http://linkedbuildingdata.net/ifc/resources" + "/" + timeLog + "/");
 
-		rdf_fileIcon.setOnDragDetected(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent me) {
+        rdf_fileIcon.setOnDragDetected(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent me) {
 
-				try {
-					URL u = new URL(baseURI.getText());
-					u.toURI();
-				} catch (Exception e) {
-					baseURI.setText("http://linkedbuildingdata.net/ifc/resources" + timeLog + "/");
-				}
+                try {
+                    URL u = new URL(baseURI.getText());
+                    u.toURI();
+                } catch (Exception e) {
+                    baseURI.setText("http://linkedbuildingdata.net/ifc/resources" + timeLog + "/");
+                }
 
-				if (!rdf_fileIcon.isDisabled()) {
-					Dragboard db = handleOnTxt.startDragAndDrop(TransferMode.ANY);
+                if (!rdf_fileIcon.isDisabled()) {
+                    Dragboard db = handleOnTxt.startDragAndDrop(TransferMode.ANY);
 
-					ClipboardContent content = new ClipboardContent();
-					Clipboard clipboard = Clipboard.getSystemClipboard();
-					try {
-						File temp = File.createTempFile("rdf", ".ttl");
+                    ClipboardContent content = new ClipboardContent();
+                    Clipboard clipboard = Clipboard.getSystemClipboard();
+                    try {
+                        File temp = File.createTempFile("rdf", ".ttl");
 
-						IfcSpfReader r = new IfcSpfReader();
-						conversionTxt.setText("");
+                        IfcSpfReader r = new IfcSpfReader();
+                        conversionTxt.setText("");
 
-						if (hasGUID_URIs.isSelected()) {
-							final Map<String, String> rootmap = new HashMap<>();
-							File tempFile = File.createTempFile("ifc", ".ttl");
-							try {
-								Model m = ModelFactory.createDefaultModel();
-								r.convert(ifcFileName, tempFile.getAbsolutePath(), baseURI.getText());
-								RDFDataMgr.read(m, tempFile.getAbsolutePath());
+                        if (hasGUID_URIs.isSelected()) {
+                            final Map<String, String> rootmap = new HashMap<>();
+                            File tempFile = File.createTempFile("ifc", ".ttl");
+                            try {
+                                Model m = ModelFactory.createDefaultModel();
+                                r.convert(ifcFileName, tempFile.getAbsolutePath(), baseURI.getText());
+                                RDFDataMgr.read(m, tempFile.getAbsolutePath());
 
-								m.listStatements().forEachRemaining(x -> {
-									String guid = getGUID(x.getSubject());
-									if (guid != null) {
-										rootmap.put(x.getSubject().getURI(), GuidCompressor.uncompressGuidString(guid));
-									}
-								});
+                                m.listStatements().forEachRemaining(x -> {
+                                    String guid = getGUID(x.getSubject());
+                                    if (guid != null) {
+                                        rootmap.put(x.getSubject().getURI(), GuidCompressor.uncompressGuidString(guid));
+                                    }
+                                });
 
-								generateModel(rootmap, m, rdfTargetName);
-							} catch (IOException e) {
-								e.printStackTrace();
-							} finally {
-								tempFile.deleteOnExit();
-							}
+                                generateModel(rootmap, m, rdfTargetName);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } finally {
+                                tempFile.deleteOnExit();
+                            }
 
-						} else
-							r.convert(ifcFileName, rdfTargetName, baseURI.getText());
+                        } else
+                            r.convert(ifcFileName, rdfTargetName, baseURI.getText());
 
-						content.putFiles(java.util.Collections.singletonList(temp));
-						db.setContent(content);
-						clipboard.setContent(content);
-					} catch (IOException e) {
+                        content.putFiles(java.util.Collections.singletonList(temp));
+                        db.setContent(content);
+                        clipboard.setContent(content);
+                    } catch (IOException e) {
 
-						e.printStackTrace();
-					}
-				}
-				me.consume();
-			}
-		});
+                        e.printStackTrace();
+                    }
+                }
+                me.consume();
+            }
+        });
 
-		rdf_fileIcon.setOnDragDone(new EventHandler<DragEvent>() {
-			public void handle(DragEvent me) {
-				me.consume();
-			}
-		});
+        rdf_fileIcon.setOnDragDone(new EventHandler<DragEvent>() {
+            public void handle(DragEvent me) {
+                me.consume();
+            }
+        });
 
-	}
+    }
 
-	public void handle_notification(String txt) {
-		Platform.runLater(() -> this.conversionTxt.appendText(txt + "\n"));
-	}
+    public void handle_notification(String txt) {
+        Platform.runLater(() -> this.conversionTxt.appendText(txt + "\n"));
+    }
 
-	@Subscribe
-	public void handleEvent(final SystemErrorEvent event) {
-		System.out.println("error: " + event.getStatus_message());
-		Platform.runLater(() -> this.conversionTxt.appendText("error: " + event.getStatus_message() + "\n"));
-	}
+    @Subscribe
+    public void handleEvent(final SystemErrorEvent event) {
+        System.out.println("error: " + event.getStatus_message());
+        Platform.runLater(() -> this.conversionTxt.appendText("error: " + event.getStatus_message() + "\n"));
+    }
 
-	@Subscribe
-	public void handleEvent(final SystemStatusEvent event) {
-		System.out.println("message: " + event.getStatus_message());
-		Platform.runLater(() -> this.conversionTxt.appendText("status: " + event.getStatus_message() + "\n"));
-	}
+    @Subscribe
+    public void handleEvent(final SystemStatusEvent event) {
+        System.out.println("message: " + event.getStatus_message());
+        Platform.runLater(() -> this.conversionTxt.appendText("status: " + event.getStatus_message() + "\n"));
+    }
 
 }

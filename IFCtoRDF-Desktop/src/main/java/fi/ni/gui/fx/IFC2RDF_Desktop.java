@@ -17,14 +17,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 /*
  * To compile this, Java 11 is needed. jfxrt.jar is included, so, the the plugin should not be mandatory
  * but installing the http://www.eclipse.org/efxclipse/index.html and http://gluonhq.com/open-source/scene-builder/
  * make coding easier. 
  * 
  */
-
 
 package fi.ni.gui.fx;
 
@@ -34,26 +32,26 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-
 @SuppressWarnings("restriction")
 public class IFC2RDF_Desktop extends Application {
-    
+
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("IFC2RDF.fxml"));
-		Scene scene = new Scene(root);
+        Scene scene = new Scene(root);
         stage.setTitle("IFCtoRDF Desktop 2.1 for Java 11");
         stage.setScene(scene);
         stage.show();
     }
 
     /**
-     * @param args the command line arguments
+     * @param args
+     *            the command line arguments
      */
     public static void main(String[] args) {
-    	
-    	org.apache.jena.query.ARQ.init();
-    	 launch(args);
+
+        org.apache.jena.query.ARQ.init();
+        launch(args);
     }
-    
+
 }

@@ -16,12 +16,6 @@
 			<artifactId>IFCtoRDF</artifactId>
 			<version>0.3J2-SNAPSHOT</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.github.pipauwel/EXPRESStoOWL -->
-		<dependency>
-			<groupId>com.github.pipauwel</groupId>
-			<artifactId>EXPRESStoOWL</artifactId>
-			<version>0.3-SNAPSHOT</version>
-		</dependency>
 		<dependency>
 			<groupId>com.github.pipauwel</groupId>
 			<artifactId>ifcParserLib</artifactId>

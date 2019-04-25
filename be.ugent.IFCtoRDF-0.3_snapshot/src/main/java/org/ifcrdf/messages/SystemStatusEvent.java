@@ -21,12 +21,14 @@ package org.ifcrdf.messages;
 
 public class SystemStatusEvent {
 
-	private final String status_message;
-	public SystemStatusEvent(String txt) {
-		this.status_message=txt;
-	}
-	public String getStatus_message() {
-		return status_message;
-	}
+    private final String status_message;
+
+    public SystemStatusEvent(String txt) {
+        this.status_message = txt;
+    }
+
+    public String getStatus_message() {
+        return status_message;
+    }
 
 }
