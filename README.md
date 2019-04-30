@@ -1,5 +1,5 @@
 # IFCtoRDF-Desktop
-Version 2.2
+Version 2.4
 
 ## Usage: 
 IFC-RDF_Desktop.jar can be started by double clicking the file.
@@ -17,6 +17,12 @@ https://www.java.com/en/download/
 
 ## Compilation: 
 git clone https://github.com/jyrkioraskari/IFCtoRDF-Desktop.git
+
+cd EXPRESStoOWL-master
+
+mvn clean install
+
+cd ..
 
 cd be.ugent.IFCtoRDF-0.3_snapshot
 
@@ -38,6 +44,9 @@ fi.ni.gui.fx.IFC2RDF_Desktop
 
 
 ## The Bash compatible command line converter:
+Example:
+
+java -Xms24G -Xmx24G -jar IFCtoRDFCommandLine.jar -g file.ifc out.ttl
 
 ```
 Usage: java -jar IFCtoRDFCommandLine.jar [OPTIONS] <inFile>... [<rdfTargetName>...]

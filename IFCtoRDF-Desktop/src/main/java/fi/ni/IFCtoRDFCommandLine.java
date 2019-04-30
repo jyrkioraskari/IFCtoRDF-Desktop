@@ -24,9 +24,18 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
+import org.ifcrdf.EventBusService;
+import org.ifcrdf.messages.SystemErrorEvent;
+import org.ifcrdf.messages.SystemStatusEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 
 import be.ugent.IfcSpfReader;
 import guidcompressor.GuidCompressor;
+import javafx.application.Platform;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -54,6 +63,8 @@ import picocli.CommandLine.Parameters;
 
 @Command(abbreviateSynopsis = true,name = "IFCtoRDFCommandLine")
 public class IFCtoRDFCommandLine {
+    private final EventBus eventBus = EventBusService.getEventBus();
+    private static final Logger LOG = LoggerFactory.getLogger(IFCtoRDFCommandLine.class);
     @Parameters(index = "0",arity = "1..*")    String inFile;
     @Parameters(index = "1",arity = "0..*")    String rdfTargetName;
 
@@ -72,6 +83,7 @@ public class IFCtoRDFCommandLine {
     String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 
     public IFCtoRDFCommandLine() {
+        eventBus.register(this);
     }
 
     public void convert() {
@@ -84,6 +96,8 @@ public class IFCtoRDFCommandLine {
         System.out.println("base_URI: "+base_URI);
         if(this.createGUID_URIs)
             System.out.println("Creating GUID URIs.");
+        else
+            System.out.println("Not creating GUID URIs. Use --guid_uris if needed.");
 
         if(this.keep_duplicates)
             System.out.println("Keeping duplicate entries.");
@@ -180,15 +194,19 @@ public class IFCtoRDFCommandLine {
                 try {
                     Model m = ModelFactory.createDefaultModel();
                     r.convert(ifcFileName, tempFile.getAbsolutePath(), baseURI);
+                    System.out.println("Temp file: "+tempFile.getAbsolutePath());
                     RDFDataMgr.read(m, tempFile.getAbsolutePath());
-
+                    System.out.println("Create a list of GUID nodes");
                     m.listStatements().forEachRemaining(x -> {
                         String guid = getGUID(x.getSubject());
                         if (guid != null) {
                             rootmap.put(x.getSubject().getURI(), GuidCompressor.uncompressGuidString(guid));
                         }
                     });
-
+                    System.out.println("Rootmap  size: "+rootmap.size());
+                    System.out.println("IfcOwl model size: "+m.size());
+                    System.out.println("Target name: "+rdfTargetName);
+                    
                     generateModel(rootmap, m, rdfTargetName);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -198,7 +216,8 @@ public class IFCtoRDFCommandLine {
 
             } else
                 r.convert(ifcFileName, rdfTargetName, baseURI);
-        } catch (IOException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
@@ -229,9 +248,10 @@ public class IFCtoRDFCommandLine {
                     o = resources_map.get(o.asResource().getURI());
             out_model.add(out_model.createStatement(s, p, o));
         });
-
+        System.out.println("out model size: "+out_model.size());
         try (OutputStream out = new FileOutputStream(rdfTargetName)) {
             RDFDataMgr.write(out, out_model, Lang.N3);
+            out.flush();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -256,6 +276,16 @@ public class IFCtoRDFCommandLine {
 
     Property property(String base_uri, String tag) {
         return ResourceFactory.createProperty(base_uri, tag);
+    }
+    
+    @Subscribe
+    public void handleEvent(final SystemErrorEvent event) {
+        System.out.println("error: " + event.getStatus_message());
+    }
+
+    @Subscribe
+    public void handleEvent(final SystemStatusEvent event) {
+        System.out.println("message: " + event.getStatus_message());
     }
 
     public static void main(String[] args) {

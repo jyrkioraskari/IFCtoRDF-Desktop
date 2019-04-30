@@ -40,7 +40,7 @@ public class About extends Stage {
         iv.setX(10.0);
         iv.setY((180.0 - height) / 2.0);
         root.getChildren().add(iv);
-        Text msg1 = new Text("IFC2RDF Desktop 2019, version 2.2");
+        Text msg1 = new Text("IFC2RDF Desktop 2019, version 2.4");
         msg1.setFill(Color.WHITE);
         msg1.setFont(new Font("Arial", 16.0));
         msg1.setX(iv.getX() + width + 5);

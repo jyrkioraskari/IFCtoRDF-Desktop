@@ -180,7 +180,7 @@ public class RDFWriter {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            eventBus.post(new SystemErrorEvent(e.getMessage()));
+            eventBus.post(new SystemErrorEvent(e.getClass().getName()+" - "+e.getMessage()));
         }
     }
 
@@ -299,6 +299,7 @@ public class RDFWriter {
                 if (Character.class.isInstance(o)) {
                     if ((Character) o != ',') {
                         LOG.error("*ERROR 15*: We found a character that is not a comma. That should not be possible");
+                        eventBus.post(new SystemErrorEvent("*ERROR 15*: A character that is not a comma. "));
                     }
                 } else if (String.class.isInstance(o)) {
                     String s = (String) o;
@@ -313,6 +314,7 @@ public class RDFWriter {
 
                         if (or == null) {
                             LOG.error("*ERROR 6*: Reference to non-existing line number in line: #" + vo.getLineNum() + "=" + vo.getFullLineAfterNum());
+                            eventBus.post(new SystemErrorEvent("*ERROR 6*: Reference to non-existing line number in line: #" + vo.getLineNum() + "=" + vo.getFullLineAfterNum()));
                             return false;
                         }
                         vo.getObjectList().set(i, or);
@@ -326,6 +328,7 @@ public class RDFWriter {
                         if (Character.class.isInstance(o)) {
                             if ((Character) o != ',') {
                                 LOG.error("*ERROR 16*: We found a character that is not a comma. " + "That should not be possible!");
+                                eventBus.post(new SystemErrorEvent("*ERROR 16*: A character that is not a comma. "));
                             }
                         } else if (String.class.isInstance(o1)) {
                             String s = (String) o1;
@@ -339,6 +342,7 @@ public class RDFWriter {
                                     or = linemap.get(toLong(s.substring(1)));
                                 if (or == null) {
                                     LOG.error("*ERROR 7*: Reference to non-existing line number in line: #" + vo.getLineNum() + " - " + vo.getFullLineAfterNum());
+                                    eventBus.post(new SystemErrorEvent("*ERROR 7*: Reference to non-existing line number in line: #" + vo.getLineNum() + " - " + vo.getFullLineAfterNum()));
                                     tmpList.set(j, "-");
                                     return false;
                                 } else
@@ -364,6 +368,7 @@ public class RDFWriter {
                                             or = linemap.get(toLong(s.substring(1)));
                                         if (or == null) {
                                             LOG.error("*ERROR 8*: Reference to non-existing line number in line: #" + vo.getLineNum() + " - " + vo.getFullLineAfterNum());
+                                            eventBus.post(new SystemErrorEvent("*ERROR 8*: Reference to non-existing line number in line: #" + vo.getLineNum() + " - " + vo.getFullLineAfterNum()));
                                             tmp2List.set(j2, "-");
                                             return false;
                                         } else
@@ -390,7 +395,8 @@ public class RDFWriter {
                 typeName = typ.get(ifcLineEntry.getName()).getName();
 
             OntClass cl = ontModel.getOntClass(ontNS + typeName);
-
+            if(cl==null)
+                eventBus.post(new SystemErrorEvent(" OntClass is null: "+ontNS + typeName));
             Resource r = getResource(baseURI + typeName + "_" + ifcLineEntry.getLineNum(), cl);
             if (r == null) {
                 // *ERROR 2 already hit: we can safely stop
@@ -421,6 +427,7 @@ public class RDFWriter {
             // Namely, if this is the case, then ERROR 2 should fire first,
             // after which the program stops
             LOG.error("ERROR 3*: fillProperties 1 - Type nor entity exists: {}", ifcLineEntry.getName());
+            eventBus.post(new SystemErrorEvent("ERROR 3*: fillProperties 1 - Type nor entity exists: "+ ifcLineEntry.getName()));
         }
 
         if (evo == null && tvo != null) {
@@ -432,6 +439,7 @@ public class RDFWriter {
                 if (Character.class.isInstance(o)) {
                     if ((Character) o != ',') {
                         LOG.error("*ERROR 17*: We found a character that is not a comma. That should not be possible!");
+                        eventBus.post(new SystemErrorEvent("*ERROR 17*: A character that is not a comma. "));
                     }
                 } else if (String.class.isInstance(o)) {
                     LOG.warn("*WARNING 1*: fillProperties 2: unhandled type property found.");
@@ -455,6 +463,7 @@ public class RDFWriter {
                 if (Character.class.isInstance(o)) {
                     if ((Character) o != ',') {
                         LOG.error("*ERROR 18*: We found a character that is not a comma. That should not be possible!");
+                        eventBus.post(new SystemErrorEvent("*ERROR 18*: A character that is not a comma."));
                     }
                 } else if (String.class.isInstance(o)) {
                     LOG.info("fillProperties 4 - fillPropertiesHandleStringObject(evo)");
@@ -481,6 +490,7 @@ public class RDFWriter {
                 if ((evo != null) && (evo.getDerivedAttributeList() != null)) {
                     if (evo.getDerivedAttributeList().size() <= attributePointer) {
                         LOG.error("*ERROR 4*: Entity in IFC files has more attributes than it is allowed have: " + subject);
+                        eventBus.post(new SystemErrorEvent("*ERROR 4*: Entity in IFC files has more attributes than it is allowed have: " + subject));
                         attributePointer++;
                         return attributePointer;
                     }
@@ -527,6 +537,8 @@ public class RDFWriter {
 
             OntProperty p = ontModel.getOntProperty(propURI);
             OntResource rclass = ontModel.getOntResource(ontNS + evorange.getName());
+            if(rclass==null)
+                eventBus.post(new SystemErrorEvent("rw540 rclass null"+ontNS + evorange.getName()));
 
             Resource r1 = getResource(baseURI + evorange.getName() + "_" + ((IFCVO) o).getLineNum(), rclass);
             ttlWriter.triple(new Triple(r.asNode(), p.asNode(), r1.asNode()));
@@ -553,6 +565,7 @@ public class RDFWriter {
                 Character c = (Character) o1;
                 if (c != ',') {
                     LOG.error("*ERROR 12*: We found a character that is not a comma. That is odd. Check!");
+                    eventBus.post(new SystemErrorEvent("*ERROR 12*: A character that is not a comma."));
                 }
             } else if (String.class.isInstance(o1)) {
                 TypeVO t = typ.get(ExpressReader.formatClassName((String) o1));
@@ -588,6 +601,7 @@ public class RDFWriter {
 
                         if (listrange.asClass().hasSuperClass(ontModel.getOntClass(LIST_NS + "OWLList"))) {
                             LOG.error("*ERROR 22*: Found supposedly unhandled ListOfList, but this should not be possible.");
+                            eventBus.post(new SystemErrorEvent("*ERROR 22*: Found supposedly unhandled ListOfList."));
                         } else {
                             fillClassInstanceList(tmpList, typerange, p, r);
                             j = tmpList.size() - 1;
@@ -596,6 +610,8 @@ public class RDFWriter {
                         // EXPRESS SETs
                         EntityVO evorange = ent.get(ExpressReader.formatClassName(((IFCVO) o1).getName()));
                         OntResource rclass = ontModel.getOntResource(ontNS + evorange.getName());
+                        if(rclass==null)
+                            eventBus.post(new SystemErrorEvent("rw613 rclass null: "+ontNS + evorange.getName()));
 
                         Resource r1 = getResource(baseURI + evorange.getName() + "_" + ((IFCVO) o1).getLineNum(), rclass);
                         ttlWriter.triple(new Triple(r.asNode(), p.asNode(), r1.asNode()));
@@ -612,6 +628,7 @@ public class RDFWriter {
                         if (Character.class.isInstance(o2)) {
                             if ((Character) o2 != ',') {
                                 LOG.error("*ERROR 20*: We found a character that is not a comma. That should not be possible");
+                                eventBus.post(new SystemErrorEvent("*ERROR 20*: A character that is not a comma."));
                             }
                         } else if (String.class.isInstance(o2)) {
                             literals.add(filterExtras((String) o2));
@@ -630,6 +647,8 @@ public class RDFWriter {
                                 if (Character.class.isInstance(o3)) {
                                     if ((Character) o3 != ',') {
                                         LOG.error("*ERROR 24*: We found a character that is not a comma. That should not be possible");
+                                        eventBus.post(new SystemErrorEvent("*ERROR 24*: A character that is not a comma."));
+
                                     }
                                 } else if (String.class.isInstance(o3)) {
                                     literals.add(filterExtras((String) o3));
@@ -683,6 +702,8 @@ public class RDFWriter {
                         if (Character.class.isInstance(o2)) {
                             if ((Character) o2 != ',') {
                                 LOG.error("*ERROR 21*: We found a character that is not a comma. That should not be possible");
+                                eventBus.post(new SystemErrorEvent("*ERROR 21*: A character that is not a comma."));
+
                             }
                         } else if (String.class.isInstance(o2)) {
                             literals.add(filterExtras((String) o2));
@@ -690,6 +711,7 @@ public class RDFWriter {
                             ifcVOs.add((IFCVO) o2);
                         } else if (LinkedList.class.isInstance(o2)) {
                             LOG.error("*ERROR 19*: Found List of List of List. Code cannot handle that.");
+                            eventBus.post(new SystemErrorEvent("*ERROR 19*: Found List of List of List. Code cannot handle that."));
                         } else {
                             LOG.warn("*WARNING 32*: Nothing happened. Not sure if this is good or bad, possible or not.");
                         }
@@ -718,6 +740,7 @@ public class RDFWriter {
                             listRemembranceResources.add(r1);
                         } else {
                             LOG.error("*ERROR 23*: Impossible: found a list that is actually not a list.");
+                            eventBus.post(new SystemErrorEvent("*ERROR 23*: Found a list that is actually not a list."));
                         }
                     }
 
@@ -726,6 +749,7 @@ public class RDFWriter {
                 }
             } else {
                 LOG.error("*ERROR 11*: We found something that is not an IFC entity, not a list, not a string, and not a character. Check!");
+                eventBus.post(new SystemErrorEvent("*ERROR 11*: We found something that is not an IFC entity, not a list, not a string, and not a character. "));
             }
         }
 
@@ -783,6 +807,7 @@ public class RDFWriter {
                 Character c = (Character) o1;
                 if (c != ',') {
                     LOG.error("*ERROR 13*: We found a character that is not a comma. That is odd. Check!");
+                    eventBus.post(new SystemErrorEvent("*ERROR 13*: A character that is not a comma."));
                 }
             } else if (String.class.isInstance(o1)) {
                 if (typ.get(ExpressReader.formatClassName((String) o1)) != null && typeRemembrance == null) {
@@ -807,6 +832,7 @@ public class RDFWriter {
                 }
             } else {
                 LOG.error("*ERROR 10*: We found something that is not an IFC entity, not a list, not a string, and not a character. Check!");
+                eventBus.post(new SystemErrorEvent("*ERROR 10*: We found something that is not an IFC entity, not a list, not a string, and not a character."));
             }
         }
 
@@ -877,6 +903,8 @@ public class RDFWriter {
             }
         }
         LOG.error("*ERROR 9*: did not find ENUM individual for " + literalString + "\r\nQuitting the application without output!");
+        eventBus.post(new SystemErrorEvent("*ERROR 9*: did not find ENUM individual for " + literalString + "\r\nQuitting the application without output!"));
+
     }
 
     private void addLiteralToResource(Resource r1, OntProperty valueProp, String xsdType, String literalString) throws IOException {
@@ -943,6 +971,8 @@ public class RDFWriter {
                         IFCVO vo = (IFCVO) el.get(i);
                         EntityVO evorange = ent.get(ExpressReader.formatClassName((vo).getName()));
                         OntResource rclass = ontModel.getOntResource(ontNS + evorange.getName());
+                        if(rclass==null)
+                            eventBus.post(new SystemErrorEvent("rw970 rclass null: "+ontNS + evorange.getName()));
                         Resource r2 = getResource(baseURI + evorange.getName() + "_" + (vo).getLineNum(), rclass);
                         LOG.info("*OK 21*: created resource: " + r2.getLocalName());
                         idCounter++;
@@ -970,6 +1000,8 @@ public class RDFWriter {
 
             if (listrange == null) {
                 LOG.error("*ERROR 14*: We could not find what kind of content is expected in the LIST.");
+                eventBus.post(new SystemErrorEvent("*ERROR 14*: We could not find what kind of content is expected in the LIST."));
+
             } else {
                 if (listrange.asClass().hasSuperClass(ontModel.getOntClass(LIST_NS + "OWLList"))) {
                     LOG.warn("*WARNING 28*: Found unhandled ListOfList");
@@ -1015,6 +1047,8 @@ public class RDFWriter {
             LOG.info("*OK 3*: added property: " + r.getLocalName() + " - " + p.getLocalName() + " - " + r1.getLocalName());
         } else {
             LOG.error("*ERROR 1*: XSD type not found for: " + p + " - " + range.getURI() + " - " + literalString);
+            eventBus.post(new SystemErrorEvent("*ERROR 1*: XSD type not found for: " + p + " - " + range.getURI() + " - " + literalString));
+
         }
     }
 
@@ -1086,11 +1120,15 @@ public class RDFWriter {
             if (evorange == null) {
                 TypeVO typerange = typ.get(ExpressReader.formatClassName(entlist.get(i).getName()));
                 rclass = ontModel.getOntResource(ontNS + typerange.getName());
+                if(rclass==null)
+                    eventBus.post(new SystemErrorEvent("rw126 rclass null: "+ontNS + typerange.getName()));
                 Resource r1 = getResource(baseURI + typerange.getName() + "_" + entlist.get(i).getLineNum(), rclass);
                 ttlWriter.triple(new Triple(r.asNode(), listp.asNode(), r1.asNode()));
                 LOG.info("*OK 8*: created property: " + r.getLocalName() + " - " + listp.getLocalName() + " - " + r1.getLocalName());
             } else {
                 rclass = ontModel.getOntResource(ontNS + evorange.getName());
+                if(rclass==null)
+                    eventBus.post(new SystemErrorEvent("rw126 rclass null: "+ontNS + evorange.getName()));
                 Resource r1 = getResource(baseURI + evorange.getName() + "_" + entlist.get(i).getLineNum(), rclass);
                 ttlWriter.triple(new Triple(r.asNode(), listp.asNode(), r1.asNode()));
                 LOG.info("*OK 9*: created property: " + r.getLocalName() + " - " + listp.getLocalName() + " - " + r1.getLocalName());
@@ -1136,6 +1174,7 @@ public class RDFWriter {
             }
         } else {
             LOG.error("*ERROR 5*: XSD type not found for: " + listrange.getLocalName());
+            eventBus.post(new SystemErrorEvent("*ERROR 5*: XSD type not found for: " + listrange.getLocalName()));
         }
     }
 
@@ -1189,27 +1228,32 @@ public class RDFWriter {
 
     private OntResource getListContentType(OntClass range) throws IOException {
         String resourceURI = range.asClass().getURI();
+        OntResource ret;
         if ((EXPRESS_NS + "STRING_List").equalsIgnoreCase(resourceURI) || range.asClass().hasSuperClass(ontModel.getOntClass(EXPRESS_NS + "STRING_List")))
-            return ontModel.getOntResource(EXPRESS_NS + "STRING");
+           ret= ontModel.getOntResource(EXPRESS_NS + "STRING");
         else if ((EXPRESS_NS + "REAL_List").equalsIgnoreCase(resourceURI) || range.asClass().hasSuperClass(ontModel.getOntClass(EXPRESS_NS + "REAL_List")))
-            return ontModel.getOntResource(EXPRESS_NS + "REAL");
+           ret= ontModel.getOntResource(EXPRESS_NS + "REAL");
         else if ((EXPRESS_NS + "INTEGER_List").equalsIgnoreCase(resourceURI) || range.asClass().hasSuperClass(ontModel.getOntClass(EXPRESS_NS + "INTEGER_List")))
-            return ontModel.getOntResource(EXPRESS_NS + "INTEGER");
+           ret= ontModel.getOntResource(EXPRESS_NS + "INTEGER");
         else if ((EXPRESS_NS + "BINARY_List").equalsIgnoreCase(resourceURI) || range.asClass().hasSuperClass(ontModel.getOntClass(EXPRESS_NS + "BINARY_List")))
-            return ontModel.getOntResource(EXPRESS_NS + "BINARY");
+            ret= ontModel.getOntResource(EXPRESS_NS + "BINARY");
         else if ((EXPRESS_NS + "BOOLEAN_List").equalsIgnoreCase(resourceURI) || range.asClass().hasSuperClass(ontModel.getOntClass(EXPRESS_NS + "BOOLEAN_List")))
-            return ontModel.getOntResource(EXPRESS_NS + "BOOLEAN");
+            ret=  ontModel.getOntResource(EXPRESS_NS + "BOOLEAN");
         else if ((EXPRESS_NS + "LOGICAL_List").equalsIgnoreCase(resourceURI) || range.asClass().hasSuperClass(ontModel.getOntClass(EXPRESS_NS + "LOGICAL_List")))
-            return ontModel.getOntResource(EXPRESS_NS + "LOGICAL");
+            ret=  ontModel.getOntResource(EXPRESS_NS + "LOGICAL");
         else if ((EXPRESS_NS + "NUMBER_List").equalsIgnoreCase(resourceURI) || range.asClass().hasSuperClass(ontModel.getOntClass(EXPRESS_NS + "NUMBER_List")))
-            return ontModel.getOntResource(EXPRESS_NS + "NUMBER");
+            ret=  ontModel.getOntResource(EXPRESS_NS + "NUMBER");
         else if (range.asClass().hasSuperClass(ontModel.getOntClass(LIST_NS + "OWLList"))) {
             String listvaluepropURI = ontNS + range.getLocalName().substring(0, range.getLocalName().length() - 5);
-            return ontModel.getOntResource(listvaluepropURI);
+            ret=  ontModel.getOntResource(listvaluepropURI);
         } else {
             LOG.warn("*WARNING 29*: did not find listcontenttype for : {}", range.getLocalName());
+            eventBus.post(new SystemErrorEvent("*WARNING 29*: did not find listcontenttype for : "+ range.getLocalName()));
             return null;
         }
+        if(ret==null)
+            eventBus.post(new SystemErrorEvent("*WARNING 29*: did not find listcontenttype for : "+ range.getLocalName()));
+        return ret;
     }
 
     private String getXSDTypeFromRange(OntResource range) {
@@ -1245,15 +1289,21 @@ public class RDFWriter {
     }
 
     private Resource getResource(String uri, OntResource rclass) {
+        if(rclass==null)
+            eventBus.post(new SystemErrorEvent("getResource failed for " + uri+" rclass is null"));
         Resource r = resourceMap.get(uri);
         if (r == null) {
             r = ResourceFactory.createResource(uri);
+            if(r==null)
+                eventBus.post(new SystemErrorEvent("getResource failed for " + uri+" r is null"));
             resourceMap.put(uri, r);
             try {
                 ttlWriter.triple(new Triple(r.asNode(), RDF.type.asNode(), rclass.asNode()));
-            } catch (Exception e) {
-                eventBus.post(new SystemErrorEvent(e.getMessage()));
-                LOG.error("*ERROR 2*: getResource failed for " + uri);
+            } catch (Exception e) { 
+                e.printStackTrace();
+                eventBus.post(new SystemErrorEvent(e.getClass().getName()+" - "+e.getMessage()));
+                LOG.error("*ERROR 2*: getResource failed for " + uri); 
+                eventBus.post(new SystemErrorEvent("*ERROR 2*: getResource failed for " + uri));
                 return null;
             }
         }

@@ -207,6 +207,9 @@ public class IfcSpfReader {
             // JO
             if (in == null)
                 in = IfcSpfReader.class.getResourceAsStream("/resources/" + exp + ".ttl");
+            if(in==null)
+                eventBus.post(new SystemErrorEvent("Ontology file not found not  "));
+            eventBus.post(new SystemStatusEvent("Ontology: "+exp));
             om.read(in, null, "TTL");
 
             InputStream fis = IfcSpfReader.class.getResourceAsStream("/ent" + exp + ".ser");
@@ -220,7 +223,7 @@ public class IfcSpfReader {
                 ent = (Map<String, EntityVO>) ois.readObject();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-                eventBus.post(new SystemErrorEvent(e.getMessage()));
+                eventBus.post(new SystemErrorEvent(e.getClass().getName()+" - "+e.getMessage()));
             } finally {
                 ois.close();
             }
@@ -235,7 +238,7 @@ public class IfcSpfReader {
                 typ = (Map<String, TypeVO>) ois.readObject();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-                eventBus.post(new SystemErrorEvent(e.getMessage()));
+                eventBus.post(new SystemErrorEvent(e.getClass().getName()+" - "+e.getMessage()));
             } finally {
                 ois.close();
             }
@@ -267,21 +270,22 @@ public class IfcSpfReader {
                 out.write(s.getBytes());
                 LOG.info("Started parsing stream");
                 eventBus.post(new SystemStatusEvent("IFCtoRDF start parsing IFC-RDF stream"));
-                System.out.println("started parsing stream");
+                System.out.println("started parsing IFC stream");
                 conv.parseModel2Stream(out);
+                System.out.println("IFC stream handled.");
                 eventBus.post(new SystemStatusEvent("IFCtoRDF finished "));
                 LOG.info("Finished!!");
 
             }
         } catch (FileNotFoundException e1) {
             e1.printStackTrace();
-            eventBus.post(new SystemErrorEvent(e1.getMessage()));
+            eventBus.post(new SystemErrorEvent(e1.getClass().getName()+" - "+e1.getMessage()));
         } finally {
             try {
                 in.close();
             } catch (Exception e1) {
                 e1.printStackTrace();
-                eventBus.post(new SystemErrorEvent(e1.getMessage()));
+                eventBus.post(new SystemErrorEvent(e1.getClass().getName()+" - "+e1.getMessage()));
 
             }
         }

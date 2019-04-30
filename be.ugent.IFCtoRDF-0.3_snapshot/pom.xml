@@ -19,7 +19,7 @@
 	<artifactId>IFCtoRDF</artifactId>
 	<name>IFC to RDF</name>
 	<packaging>jar</packaging>
-	<version>0.3J3-SNAPSHOT</version>
+	<version>0.3J4-SNAPSHOT</version>
 	<licenses>
 		<license>
 			<name>Apache License, Version 2.0</name>
@@ -317,7 +317,7 @@
 		<junit.version>4.7</junit.version>
 		<slf4j-log4j12.version>1.7.7</slf4j-log4j12.version>
 		<jena.version>3.1.1</jena.version>
-		<expresstoowl.version>0.2</expresstoowl.version>
+		<expresstoowl.version>0.3-SNAPSHOT</expresstoowl.version>
 		<!-- Maven Plugin Dependencies -->
 		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
 		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
