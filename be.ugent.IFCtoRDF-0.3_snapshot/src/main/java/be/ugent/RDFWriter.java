@@ -598,7 +598,7 @@ public class RDFWriter {
                         // EXPRESS LISTs
                         String listvaluepropURI = ontNS + typerange.getLocalName().substring(0, typerange.getLocalName().length() - 5);
                         OntResource listrange = ontModel.getOntResource(listvaluepropURI);
-
+                        System.out.println("olistclass: "+LIST_NS + "OWLList");
                         if (listrange.asClass().hasSuperClass(ontModel.getOntClass(LIST_NS + "OWLList"))) {
                             LOG.error("*ERROR 22*: Found supposedly unhandled ListOfList, but this should not be possible.");
                             eventBus.post(new SystemErrorEvent("*ERROR 22*: Found supposedly unhandled ListOfList."));

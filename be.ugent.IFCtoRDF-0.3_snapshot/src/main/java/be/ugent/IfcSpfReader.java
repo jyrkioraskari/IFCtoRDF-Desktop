@@ -211,6 +211,17 @@ public class IfcSpfReader {
                 eventBus.post(new SystemErrorEvent("Ontology file not found not  "));
             eventBus.post(new SystemStatusEvent("Ontology: "+exp));
             om.read(in, null, "TTL");
+            
+            
+            // LISTS
+            in = IfcSpfReader.class.getResourceAsStream("/list.ttl");
+
+            // JO
+            if (in == null)
+                in = IfcSpfReader.class.getResourceAsStream("/resources/list.ttl");
+            if(in==null)
+                eventBus.post(new SystemErrorEvent("List ontology file not found not  "));
+            om.read(in, null, "TTL");
 
             InputStream fis = IfcSpfReader.class.getResourceAsStream("/ent" + exp + ".ser");
 
