@@ -1,5 +1,5 @@
 # IFCtoRDF-Desktop
-Version 2.4
+Version 2.6
 
 ## Usage: 
 IFC-RDF_Desktop.jar can be started by double clicking the file.
