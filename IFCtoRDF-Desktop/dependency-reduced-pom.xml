@@ -4,7 +4,7 @@
   <groupId>org.ifcrdf</groupId>
   <artifactId>IFC-RDF_Desktop_Java_11</artifactId>
   <name>IFC-RDF Desktop Java 11</name>
-  <version>2.6</version>
+  <version>2.7</version>
   <build>
     <plugins>
       <plugin>

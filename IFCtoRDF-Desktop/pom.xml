@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>com.github.pipauwel</groupId>
 			<artifactId>IFCtoRDF</artifactId>
-			<version>0.3J6-SNAPSHOT</version>
+			<version>0.4J1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.pipauwel</groupId>
@@ -46,7 +46,7 @@
 
 	</dependencies>
 
-	<version>2.6</version>
+	<version>2.7</version>
 	<packaging>jar</packaging>
 
 	<build>

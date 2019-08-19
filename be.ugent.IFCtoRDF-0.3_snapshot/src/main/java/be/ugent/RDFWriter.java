@@ -1255,7 +1255,7 @@ public class RDFWriter {
             eventBus.post(new SystemErrorEvent("*WARNING 29*: did not find listcontenttype for : "+ range.getLocalName()));
         return ret;
     }
-
+    
     private String getXSDTypeFromRange(OntResource range) {
         if (range.asClass().getURI().equalsIgnoreCase(EXPRESS_NS + "STRING") || range.asClass().hasSuperClass(ontModel.getOntClass(EXPRESS_NS + "STRING")))
             return "string";
@@ -1309,6 +1309,8 @@ public class RDFWriter {
         }
         return r;
     }
+    
+
 
     public boolean isRemoveDuplicates() {
         return removeDuplicates;
