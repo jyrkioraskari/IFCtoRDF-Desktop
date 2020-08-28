@@ -1,6 +1,9 @@
 # IFCtoRDF-Desktop
 Version 2.8
 
+
+A user interface for https://github.com/pipauwel/IFCtoRDF
+
 ## Usage: 
 IFC-RDF_Desktop.jar can be started by double clicking the file.
 
