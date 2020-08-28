@@ -1,5 +1,5 @@
 # IFCtoRDF-Desktop
-Version 2.6
+Version 2.8
 
 ## Usage: 
 IFC-RDF_Desktop.jar can be started by double clicking the file.
@@ -22,13 +22,6 @@ cd EXPRESStoOWL-master
 
 mvn clean install
 
-cd ..
-
-cd be.ugent.IFCtoRDF-0.3_snapshot
-
-mvn clean install
-
-cd ..
 
 cd IFCtoRDF-Desktop
 

@@ -24,9 +24,9 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.ifcrdf.EventBusService;
-import org.ifcrdf.messages.SystemErrorEvent;
-import org.ifcrdf.messages.SystemStatusEvent;
+import org.lbdapplication_messaging.LBD_ApplicationEventBusService;
+import org.lbdapplication_messaging.events.LBD_SystemErrorEvent;
+import org.lbdapplication_messaging.events.LBD_SystemStatusEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,6 @@ import com.google.common.eventbus.Subscribe;
 
 import be.ugent.IfcSpfReader;
 import guidcompressor.GuidCompressor;
-import javafx.application.Platform;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -60,7 +59,7 @@ import picocli.CommandLine.Parameters;
 
 @Command(abbreviateSynopsis = true,name = "IFCtoRDFCommandLine")
 public class IFCtoRDFCommandLine {
-    private final EventBus eventBus = EventBusService.getEventBus();
+    private final EventBus eventBus = LBD_ApplicationEventBusService.getEventBus();
     private static final Logger LOG = LoggerFactory.getLogger(IFCtoRDFCommandLine.class);
     @Parameters(index = "0",arity = "1..*")    String inFile;
     @Parameters(index = "1",arity = "0..*")    String rdfTargetName;
@@ -276,12 +275,12 @@ public class IFCtoRDFCommandLine {
     }
     
     @Subscribe
-    public void handleEvent(final SystemErrorEvent event) {
+    public void handleEvent(final LBD_SystemErrorEvent event) {
         System.out.println("error: " + event.getStatus_message());
     }
 
     @Subscribe
-    public void handleEvent(final SystemStatusEvent event) {
+    public void handleEvent(final LBD_SystemStatusEvent event) {
         System.out.println("message: " + event.getStatus_message());
     }
 

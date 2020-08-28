@@ -47,9 +47,9 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.ifcrdf.EventBusService;
-import org.ifcrdf.messages.SystemErrorEvent;
-import org.ifcrdf.messages.SystemStatusEvent;
+import org.lbdapplication_messaging.LBD_ApplicationEventBusService;
+import org.lbdapplication_messaging.events.LBD_SystemErrorEvent;
+import org.lbdapplication_messaging.events.LBD_SystemStatusEvent;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -83,7 +83,7 @@ import javafx.stage.Stage;
 public class IFC2RDFController implements Initializable, FxInterface {
     String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
     private Preferences prefs = Preferences.userNodeForPackage(IFC2RDFController.class);
-    private final EventBus eventBus = EventBusService.getEventBus();
+    private final EventBus eventBus = LBD_ApplicationEventBusService.getEventBus();
 
     @SuppressWarnings("unused")
     private static String ontologyNamespace;
@@ -460,13 +460,13 @@ public class IFC2RDFController implements Initializable, FxInterface {
     }
 
     @Subscribe
-    public void handleEvent(final SystemErrorEvent event) {
+    public void handleEvent(final LBD_SystemErrorEvent event) {
         System.out.println("error: " + event.getStatus_message());
         Platform.runLater(() -> this.conversionTxt.appendText("error: " + event.getStatus_message() + "\n"));
     }
 
     @Subscribe
-    public void handleEvent(final SystemStatusEvent event) {
+    public void handleEvent(final LBD_SystemStatusEvent event) {
         System.out.println("message: " + event.getStatus_message());
         Platform.runLater(() -> this.conversionTxt.appendText("status: " + event.getStatus_message() + "\n"));
     }
