@@ -58,14 +58,16 @@ This project is released under the open source [GNU Affero General Public Licens
 
 ## Cite this
 ```
-@misc{jyrki_oraskari_2019_2641229,
+@software{jyrki_oraskari_2020_4005935,
   author       = {Jyrki Oraskari},
   title        = {{jyrkioraskari/IFCtoRDF-Desktop: The IFCtoRDF 
-                   Desktop Application 2.2 - Java 11 support}},
-  month        = apr,
-  year         = 2019,
-  doi          = {10.5281/zenodo.2641229},
-  url          = {https://doi.org/10.5281/zenodo.2641229}
+                   Desktop Application 2.8}},
+  month        = aug,
+  year         = 2020,
+  publisher    = {Zenodo},
+  version      = {2.8},
+  doi          = {10.5281/zenodo.4005935},
+  url          = {https://doi.org/10.5281/zenodo.4005935}
 }
 ```
 ## Frequently asked questions
