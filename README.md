@@ -1,5 +1,5 @@
 # IFCtoRDF-Desktop
-Version 2.8
+Version 2.8.0
 
 
 A user interface for https://github.com/pipauwel/IFCtoRDF
