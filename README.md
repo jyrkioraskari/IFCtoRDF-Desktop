@@ -1,5 +1,5 @@
 # IFCtoRDF-Desktop
-Version 2.8
+Version 2.8.0
 
 
 A user interface for https://github.com/pipauwel/IFCtoRDF
@@ -56,7 +56,7 @@ Usage: java -jar IFCtoRDFCommandLine.jar [OPTIONS] <inFile>... [<rdfTargetName>.
 ## License
 This project is released under the open source [GNU Affero General Public License v3](http://www.gnu.org/licenses/agpl-3.0.en.html)
 
-## Cite this
+## How to cite
 ```
 @software{jyrki_oraskari_2020_4005935,
   author       = {Jyrki Oraskari},
