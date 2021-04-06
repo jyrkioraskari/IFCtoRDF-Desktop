@@ -65,7 +65,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>29.0-jre</version>
+			<version>[30.0-jre,)</version>
 		</dependency>
 
 	</dependencies>
@@ -110,7 +110,7 @@
 						<param>org.openjfx:javafx-base:11.0.2</param>
 						<param>org.openjfx:javafx-fxml:11.0.2</param>
 						<param>org.apache.jena:apache-jena-libs:3.16.0</param>
-						<param>com.google.guava:guava:29.0-jre</param>
+						<param>com.google.guava:guava:30.1.1-jre</param>
 					</excludes>
 				</configuration>
 
