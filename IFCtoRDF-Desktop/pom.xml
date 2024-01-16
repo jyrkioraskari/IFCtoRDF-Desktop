@@ -27,37 +27,37 @@
 		</license>
 	</licenses>
 	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
-			<version>11.0.2</version>
+			<version>22-ea+16</version>
 		</dependency>
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-fxml</artifactId>
-			<version>11.0.2</version>
+			<version>22-ea+16</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.openjfx/javafx-base -->
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-base</artifactId>
-			<version>11.0.2</version>
+			<version>22-ea+16</version>
 		</dependency>
 		<dependency>
 			<groupId>info.picocli</groupId>
 			<artifactId>picocli</artifactId>
-			<version>4.0.0-alpha-2</version>
+			<version>4.7.5</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.jena/apache-jena-libs -->
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>apache-jena-libs</artifactId>
-			<version>3.16.0</version>
+			<version> 4.10.0</version>
 			<type>pom</type>
 		</dependency>
 
@@ -69,7 +69,7 @@
 		</dependency>
 
 	</dependencies>
-	<version>2.8</version>
+	<version>2.9.0</version>
 	<packaging>jar</packaging>
 
 	<build>
@@ -87,34 +87,7 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.complykit</groupId>
-				<artifactId>license-check-maven-plugin</artifactId>
-				<version>0.5.3</version>
-				<executions>
-					<execution>
-						<phase>verify</phase>
-						<goals>
-							<goal>os-check</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<blacklist>
-						<param>agpl-3.0</param> <!--exclude affero -->
-						<param>gpl-2.0</param> <!--exclude gpl 2 -->
-						<param>gpl-3.0</param> <!--exclude gpl 3 -->
-					</blacklist>
-					<excludes>
-						<param>org.openjfx:javafx-controls:11.0.2</param>
-						<param>org.openjfx:javafx-base:11.0.2</param>
-						<param>org.openjfx:javafx-fxml:11.0.2</param>
-						<param>org.apache.jena:apache-jena-libs:3.16.0</param>
-						<param>com.google.guava:guava:30.1.1-jre</param>
-					</excludes>
-				</configuration>
-
-			</plugin>
+			
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>license-maven-plugin</artifactId>

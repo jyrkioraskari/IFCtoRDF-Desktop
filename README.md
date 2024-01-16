@@ -1,5 +1,5 @@
 # IFCtoRDF-Desktop
-Version 2.8.1
+Version 2.9.0
 
 
 A user interface for https://github.com/pipauwel/IFCtoRDF
@@ -13,10 +13,9 @@ java -jar IFC-RDF_Desktop.jar
 If a larger model is converted, use the following:
 java -Xms24G -Xmx24G -XX:MaxPermSize=1G  -jar IFC-RDF_Desktop.jar
 
-The binary was compiled with Java 8. It was been tested to work with Java 11, also.
 
-If needed, Java can be downlowaded from:
-https://www.java.com/en/download/
+It is recommended to use OpenJDK 21 (it is the modt current  Long-Term Support version). Java 17 is supported. OpenJava can be downloaded from  (https://docs.microsoft.com/en-us/java/openjdk/download).
+On a Windows system, download the MSI file that matches your processor type (usually x64 aka Intell), and run it to install Java.
 
 ## Compilation: 
 git clone https://github.com/jyrkioraskari/IFCtoRDF-Desktop.git
